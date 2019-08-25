@@ -1,0 +1,18 @@
+T = int(input())
+
+i = 0
+while(i < T):
+    H, W, N = map(int, input().split())
+    if(N % H == 0):
+        floor = H
+    else:
+        floor = N % H
+    if(N % H != 0):
+        room = (N // H) + 1
+    else:
+        room = (N // H)
+    if(room < 10):
+        print(str(floor) + '0' + str(room))
+    else:
+        print(str(floor) + str(room))
+    i += 1
