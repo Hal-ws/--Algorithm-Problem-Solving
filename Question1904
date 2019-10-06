@@ -1,0 +1,15 @@
+N = int(input())
+
+first = 1
+second = 2
+for i in range (N - 2):
+    if(N <= 2):
+        nthAns = N
+        print(nthAns)
+        break
+    nthAns = first + second
+    if (nthAns >= 15746):
+        nthAns -= 15746
+    first = second
+    second = nthAns
+print(nthAns)
