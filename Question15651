@@ -1,0 +1,20 @@
+N, M = map(int, input().split())
+
+ans = [0] * M
+numList = [0] * N
+dvdFactorList = [0] * M
+
+for i in range(N):
+    numList[i] = i + 1
+for i in range(M):
+    dvdFactorList[i] = pow(N, M) // pow(N, i + 1)
+for i in range(pow(N, M)):
+    ans = [0] * M
+    for j in range(M):
+        tempIdx = i // dvdFactorList[j]
+        if tempIdx >= M:
+            tempIdx = tempIdx % N
+        ans[j] = numList[tempIdx]
+    for k in range(M):
+        print(ans[k], end=' ')
+    print()
