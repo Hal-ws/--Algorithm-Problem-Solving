@@ -1,15 +1,9 @@
 import sys
-
 T = int(sys.stdin.readline())
 
-
-def checkInCircle(point, circle):
-    distance = (circle[0] - point[0]) * (circle[0] - point[0]) + (circle[1] - point[1]) * (circle[1] - point[1])
-    if distance > circle[2] * circle[2]:
-        return False
-    else:
+def checkpass(p1, p2, c):
+    if ((c[0] - p1[0]) * (c[0] - p1[0]) + (c[1] - p1[1]) * (c[1] - p1[1]) > c[2] * c[2]) != ((c[0] - p2[0]) * (c[0] - p2[0]) + (c[1] - p2[1]) * (c[1] - p2[1]) > c[2] * c[2]) :
         return True
-
 
 for i in range(T):
     points = list(map(int, sys.stdin.readline().split()))
@@ -19,9 +13,6 @@ for i in range(T):
     for j in range(n):
         planets.append(list(map(int, sys.stdin.readline().split())))
     for k in range(n):
-        check = [None, None]
-        check[0] = checkInCircle([points[0], points[1]], planets[k])
-        check[1] = checkInCircle([points[2], points[3]], planets[k])
-        if check[0] != check[1]:
+        if checkpass([points[0], points[1]], [points[2], points[3]], planets[k]):
             cnt += 1
     print(cnt)
