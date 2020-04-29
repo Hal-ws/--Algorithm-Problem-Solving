@@ -1,0 +1,27 @@
+import sys
+
+T = int(sys.stdin.readline())
+
+
+def checkInCircle(point, circle):
+    distance = (circle[0] - point[0]) * (circle[0] - point[0]) + (circle[1] - point[1]) * (circle[1] - point[1])
+    if distance > circle[2] * circle[2]:
+        return False
+    else:
+        return True
+
+
+for i in range(T):
+    points = list(map(int, sys.stdin.readline().split()))
+    n = int(sys.stdin.readline())
+    planets = []
+    cnt = 0
+    for j in range(n):
+        planets.append(list(map(int, sys.stdin.readline().split())))
+    for k in range(n):
+        check = [None, None]
+        check[0] = checkInCircle([points[0], points[1]], planets[k])
+        check[1] = checkInCircle([points[2], points[3]], planets[k])
+        if check[0] != check[1]:
+            cnt += 1
+    print(cnt)
