@@ -6,13 +6,9 @@ A_ = A
 
 A_ = sorted(A_)
 P = [0] * N
-print('A: ' +str(A))
-print('A_: ' + str(A_))
 for i in range(N):
     P[i] = A_.index(A[i])
+    A_[P[i]] = None
 
-B = [0] * N
-print('P: ' + str(P))
 for i in range(N):
-    B[P[i]] = A[i]
-print('B: ' + str(B))
+    print(P[i], end=' ')
