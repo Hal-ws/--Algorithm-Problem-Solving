@@ -1,21 +1,26 @@
 import sys
+from math import log2
 
 N = int(sys.stdin.readline())
 
-def drawstar(size, sfloor, efloor):
-    if size % 2 == 0:
-        newList = []
-        basicList = drawstar(size // 2, sfloor, efloor // 2)
+def drawStar(size, top, bottom):
+    if size % 2  == 0:
+        newList = [0] * size
+        basicList = drawStar(size // 2, top, bottom // 2)
         for i in range(size // 2):
-            newList.append(basicList[i])
-        basicList = drawstar(size // 2, efloor // 2 + 1, efloor // 2)
+            newList[i] = basicList[i]
+        bB = 3 * pow(2, int(log2((bottom - 2) // 3 * 2))) - 1
         for i in range(size // 2, size):
-            newList.append(basicList[i])
+            newList[i] = basicList[i - size // 2] + ' ' * (bB - (i - size // 2) * 2) + basicList[i - size // 2]
         return newList
     else:
-        smallest = [' * ',
+        smallest = ['*',
                     '* *',
-                    '***']
+                    '*****']
         return smallest
 
-print(drawstar(N, 1, N // 3))
+ans = drawStar(N, 0, N - 1)
+for i in range(N):
+    ans[i] = ' ' * ((N - 1) - i) + ans[i]  + ' ' * ((N - 1) - i)
+for i in range(N):
+    print(ans[i])
