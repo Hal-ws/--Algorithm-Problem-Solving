@@ -4,12 +4,14 @@ N, M = map(int, sys.stdin.readline().split())
 a = list(map(int, sys.stdin.readline().split()))
 
 cnt = 0
-for i in range(len(a) - 1):
+for i in range(len(a)):
+    sum = 0
     for j in range(i, len(a)):
-        if sum(a[i:j + 1]) == M:
+        sum += a[j]
+        if sum == M:
             cnt += 1
             break
-        if sum(a[i:j + 1]) > M:
+        if sum > M:
             break
 
 print(cnt)
