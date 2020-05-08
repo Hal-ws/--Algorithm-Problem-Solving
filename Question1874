@@ -1,0 +1,23 @@
+import sys
+
+n = int(sys.stdin.readline())
+number = [0] * n
+for i in range(n):
+    number[i] = sys.stdin.readline()
+
+i = 0
+ans = ''
+lastNum = None ## stack 에 있는 마지막 수 
+numInStack = 1 ## stack에 들어갈 예정인 첫번째 수
+while i < n:
+    if i == 0:
+        lastNum = number[i] - 1
+        ans = ans + '+' * number[i]
+        ans = ans + '-'
+    if number[i] <= lastNum:
+        lastNum = number[i] - 1
+        ans = ans + '-' * (lastNum - number[i] + 1)
+    else:
+        lastNum = number[i] - 1
+        ans = ans + ''
+    i += 1
