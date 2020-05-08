@@ -3,29 +3,43 @@ import sys
 n = int(sys.stdin.readline())
 number = [0] * n
 for i in range(n):
-    number[i] = sys.stdin.readline()
+    number[i] = int(sys.stdin.readline())
 waiting = [0] * n
 for i in range(n):
     waiting[i] = i + 1
 
 i = 0
 stack = []
-lastIdx = 0
+lastIdx = 0 ## stack의 마지막 index
 ans = ''
 flag = 0
 for i in range(n):
+    print('i: ' + str(i) + ' number[i]: ' + str(number[i]))
+    lastIdx = len(stack) - 1
     if i == 0:
-        for j in range(number[i]):
-            stack.append(number[j])
-        ans = ans + '+' * number[j] + '-'
-        lastIdx = number[j] - 2
-        waiting = waiting[number[j]:]
-    if number[i] == stack[lastIdx]:
+        for j in range(number[i] - 1):
+            stack.append(waiting[j])
+        ans = ans + '+' * number[i] + '-'
+        waiting = waiting[number[i]:]
+    elif number[i] > stack[lastIdx]:
+        if number[i] not in waiting:
+            flag = -1
+            break
+        for j in range(waiting.index(number[i])):
+            stack.append(waiting[j])
+        ans = ans + '+' * (waiting.index(number[i]) + 1) + '-'
+        waiting = waiting[waiting.index(number[i]) + 1:]
+    elif number[i] < stack[lastIdx]:
+        flag = -1
+        break
+    elif number[i] == stack[lastIdx]:
         stack.remove(stack[lastIdx])
         ans = ans + '-'
-        lastIdx -= 1
-        waiting = waiting[1:]
-    if number[i] > stack[lastIdx]:
-        for j in range(number[i] - stack[lastIdx]):
-            
+    print('stack: ' + str(stack) + ' waiting: ' + str(waiting))
+    print('lastIdx: ' + str(lastIdx))
 
+if flag == -1:
+    print('NO')
+else:
+    for i in range(len(ans)):
+        print(ans[i])
