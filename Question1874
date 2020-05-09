@@ -10,18 +10,16 @@ for i in range(n):
 
 i = 0
 stack = []
-lastIdx = 0 ## stack의 마지막 index
 ans = ''
 flag = 0
 for i in range(n):
-    print('i: ' + str(i) + ' number[i]: ' + str(number[i]))
-    lastIdx = len(stack) - 1
-    if i == 0:
-        for j in range(number[i] - 1):
+    lenStack = len(stack)
+    if lenStack == 0:
+        for j in range(waiting.index(number[i])):
             stack.append(waiting[j])
-        ans = ans + '+' * number[i] + '-'
-        waiting = waiting[number[i]:]
-    elif number[i] > stack[lastIdx]:
+        ans = ans + '+' * (waiting.index(number[i]) + 1) + '-'
+        waiting = waiting[waiting.index(number[i]) + 1:]
+    elif number[i] > stack[lenStack - 1]:
         if number[i] not in waiting:
             flag = -1
             break
@@ -29,14 +27,12 @@ for i in range(n):
             stack.append(waiting[j])
         ans = ans + '+' * (waiting.index(number[i]) + 1) + '-'
         waiting = waiting[waiting.index(number[i]) + 1:]
-    elif number[i] < stack[lastIdx]:
+    elif number[i] < stack[lenStack - 1]:
         flag = -1
         break
-    elif number[i] == stack[lastIdx]:
-        stack.remove(stack[lastIdx])
+    elif number[i] == stack[lenStack - 1]:
+        stack.remove(stack[lenStack - 1])
         ans = ans + '-'
-    print('stack: ' + str(stack) + ' waiting: ' + str(waiting))
-    print('lastIdx: ' + str(lastIdx))
 
 if flag == -1:
     print('NO')
