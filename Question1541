@@ -1,0 +1,29 @@
+a = input()
+
+i = 0
+marker = -1 ## + - 위치를 기록
+splitter = []
+code = []
+j = 0
+while(i < len(a)): ## 주어진 식을 0번 위치부터 진행
+    if(a[i] == '+'):
+        splitter.append(int(a[marker + 1:i]))
+        code.append('+')
+        marker = i  # marker에 현재 위치를 기록
+    elif (a[i] == '-'):
+        splitter.append(int(a[marker + 1:i]))
+        code.append('-')
+        marker = i  # marker에 현재 위치를 기록
+    i += 1
+    if(i == len(a) - 1): ## input 값의 마지막을 찍으면
+        splitter.append(int(a[marker + 1:i + 1]))
+
+checker = -1
+for i in range(len(code)):
+    if(code[i] == '-'):
+        checker = i
+        break
+if(checker < 0):
+    print(sum(splitter))
+else:
+    print(sum(splitter[0:checker + 1]) - sum(splitter[checker + 1:len(splitter)]))
