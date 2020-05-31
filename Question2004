@@ -16,11 +16,6 @@ def get2and5(num):
 first = get2and5(N)
 second = get2and5(N - M)
 third = get2and5(M)
-
 ans = [first[0] - second[0] - third[0], first[1] - second[1] - third[1]]
 
-
-if min(ans) == 0:
-    print(0)
-else:
-    print(min(ans))
+print(min(ans))
