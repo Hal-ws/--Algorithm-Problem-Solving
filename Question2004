@@ -1,40 +1,24 @@
-import sys
+N, M = map(int, input().split())
 
-N, M = map(int, sys.stdin.readline().split())
-
-def getfactor(num):
-    factors = [0, 0]
+def get2and5(num):
     i = 1
-    while True:
-        if num % pow(2, i) == 0:
-            i += 1
-        else:
-            break
-    factors[0] = i - 1
-    i = 1
-    while True:
-        if num % pow(5, i) == 0:
-            i += 1
-        else:
-            break
-    factors[1] = i - 1
-    return factors
+    cnt2 = 0
+    while pow(2, i) <= num:
+        cnt2 += num // pow(2, i)
+        i += 1
+    i = 0
+    cnt5 = 0
+    while pow(5, i) <= num:
+        cnt5 += num // pow(5, i)
+        i += 1
+    return [cnt2, cnt5]
 
-numerator2 = 0
-numerator5 = 0
-for i in range(N - M + 1, N + 1):
-    temp = getfactor(i)
-    numerator2 += temp[0]
-    numerator5 += temp[1]
+first = get2and5(N)
+second = get2and5(N - M)
+third = get2and5(M)
 
-denominator2 = 0
-denominator5 = 0
-for i in range(1, M + 1):
-    temp = getfactor(i)
-    denominator2 += temp[0]
-    denominator5 += temp[1]
+ans = [first[0] - second[0] - third[0], first[1] - second[1] - third[1]]
 
-ans = [numerator2 - denominator2, numerator5 - denominator5]
 
 if min(ans) == 0:
     print(0)
