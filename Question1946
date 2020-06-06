@@ -1,37 +1,22 @@
-T = int(input())
-def deleteLowerperson(i, list):
-    j = 0
-    while(j < len(list)):
-        if(list[i] != None and list[j] != None and list[i][0] < list[j][0] and list[i][1] < list[j][1]):
-            list[j] = None
-        j += 1
-    return list
+import sys
+
+T = int(sys.stdin.readline())
 
 def havingTest():
-    N = int(input())
-    i = 0
-    list = []
-    while(i < N):
-        a, b = map(int, input().split(' '))
-        list.append([a, b])
-        i += 1
-    i = 0
-    sum = []
-    while(i < len(list)):
-        sum.append(list[i][0] + list[i][1])
-        i += 1
-    i = 0
-    while(i < N):
-        list = deleteLowerperson(i, list)
-        i += 1
-    cnt = 0
-    i = 0
-    while(i < len(list)):
-        if(list[i] != None):
-            cnt += 1
-        i += 1
-    print(cnt)
-i = 0
-while(i < T):
+    N = int(sys.stdin.readline())
+    people = []
+    for i in range(N):
+        a, b = map(int, sys.stdin.readline().split())
+        people.append([a, b])
+    people = sorted(people)
+    bestInterview = people[0][1]
+    ans = 1
+    for i in range(1, N):
+        if people[i][1] < bestInterview:
+            bestInterview = people[i][1]
+            ans += 1
+    print(ans)
+
+
+for i in range(T):
     havingTest()
-    i += 1
