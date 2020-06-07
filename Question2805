@@ -20,6 +20,7 @@ flag = 0
 while lowHeight < highHeight:
     mid = (lowHeight + highHeight) // 2
     bringTree = cutTrees(trees, mid)
+    print('cutting Point: ' + str(mid))
     if bringTree == M:
         flag = 1
         break
@@ -31,4 +32,4 @@ while lowHeight < highHeight:
 if flag == 1:
     print(mid)
 else:
-    print((lowHeight + highHeight) // 2)
+    print(mid - 1)
