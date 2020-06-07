@@ -32,3 +32,5 @@ elif bringTree < M:
     print(mid - 1)
 elif bringTree > M and cutTrees(trees, mid + 1) >= M:
     print(mid + 1)
+else:
+    print(mid)
