@@ -15,21 +15,20 @@ N, M = map(int, sys.stdin.readline().split())
 trees = list(map(int, sys.stdin.readline().split()))
 lowHeight = 0
 highHeight = max(trees)
-flag = 0
 
 while lowHeight < highHeight:
     mid = (lowHeight + highHeight) // 2
     bringTree = cutTrees(trees, mid)
-    print('cutting Point: ' + str(mid))
     if bringTree == M:
-        flag = 1
         break
     elif bringTree > M:
         lowHeight = mid + 1
     else:
         highHeight = mid - 1
 
-if flag == 1:
+if bringTree == M:
     print(mid)
-else:
+elif bringTree < M:
     print(mid - 1)
+elif bringTree > M and cutTrees(trees, mid + 1) >= M:
+    print(mid + 1)
