@@ -29,7 +29,10 @@ while lowHeight < highHeight:
 if bringTree == M:
     print(mid)
 elif bringTree < M:
-    print(mid - 1)
+    while bringTree < M:
+        mid -= 1
+        bringTree = cutTrees(trees, mid)
+    print(mid)
 elif bringTree > M and cutTrees(trees, mid + 1) >= M:
     print(mid + 1)
 else:
