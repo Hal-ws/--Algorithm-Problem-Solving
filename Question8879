@@ -1,0 +1,15 @@
+import sys
+
+N, K = map(int, sys.stdin.readline().split())
+countries = []
+
+for i in range(N):
+    countries.append(list(map(int, sys.stdin.readline().split())))
+    if i == K - 1:
+        target = countries[i]
+
+countries = sorted(countries, reverse=True)
+for i in range(N):
+    if countries[i] == target:
+        print(i + 1)
+        break
