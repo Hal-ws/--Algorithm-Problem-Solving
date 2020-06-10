@@ -1,0 +1,30 @@
+import sys
+import math
+
+def getdivisers(num):
+    divisers = []
+    for i in range(2, int(math.sqrt(num)) + 1):
+        if num % i == 0:
+            divisers.append(i)
+            if i != num // i:
+                divisers.append(num // i)
+    divisers = sorted(divisers)
+    return divisers
+
+N = int(sys.stdin.readline())
+
+numbers = []
+for i in range(N):
+    numbers.append(int(sys.stdin.readline()))
+numbers = sorted(numbers)
+divisers = getdivisers(numbers[len(numbers) - 1] - numbers[0])
+
+ans = []
+for i in range(len(divisers)):
+    
+    for j in range(1, len(numbers)):
+         
+
+
+
+print(divisers)
