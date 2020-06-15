@@ -1,0 +1,16 @@
+import sys
+
+T = int(sys.stdin.readline())
+
+def getbags(people, candy):
+
+
+    return 0
+
+for i in range(T):
+    K, C = map(int, sys.stdin.readline().split())
+    if getbags(K, C) == 0:
+        print("IMPOSSIBLE")
+    else:
+        print(getbags(K, C))
+
