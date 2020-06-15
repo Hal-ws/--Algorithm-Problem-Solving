@@ -9,10 +9,12 @@ def getbags(people, candy):
         if (Y * people + 1) % candy == 0:
             return (Y * people + 1) // candy
         Y += 1
+    return False
 
 for i in range(T):
     people, candy = map(int, sys.stdin.readline().split())
-    if getbags(people, candy) == 0:
+    bags = getbags(people, candy)
+    if bags == False:
         print("IMPOSSIBLE")
     else:
-        print(getbags(people, candy))
+        print(bags)
