@@ -3,8 +3,12 @@ import sys
 T = int(sys.stdin.readline())
 
 def getbags(people, candy):
-    if
-    return 0
+    Y = 1
+    while True:
+        print((Y * people + 1) % candy)
+        if (Y * people + 1) % candy == 0:
+            return (Y * people + 1) // candy
+        Y += 1
 
 for i in range(T):
     people, candy = map(int, sys.stdin.readline().split())
@@ -12,4 +16,3 @@ for i in range(T):
         print("IMPOSSIBLE")
     else:
         print(getbags(people, candy))
-
