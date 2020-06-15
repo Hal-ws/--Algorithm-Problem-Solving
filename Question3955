@@ -3,14 +3,13 @@ import sys
 T = int(sys.stdin.readline())
 
 def getbags(people, candy):
-
-
+    if
     return 0
 
 for i in range(T):
-    K, C = map(int, sys.stdin.readline().split())
-    if getbags(K, C) == 0:
+    people, candy = map(int, sys.stdin.readline().split())
+    if getbags(people, candy) == 0:
         print("IMPOSSIBLE")
     else:
-        print(getbags(K, C))
+        print(getbags(people, candy))
 
