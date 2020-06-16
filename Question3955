@@ -5,7 +5,7 @@ T = int(sys.stdin.readline())
 def getbags(people, cpb):
     n = 0
     cpp = 1
-    cd = people * cpp
+    cd = people
     candy = people * cpp + 1
     while True:
         print('cpp: ' + str(cpp))
@@ -15,13 +15,13 @@ def getbags(people, cpb):
         else:
             if candy < cpb:
                 print('Sum of candies is smaller than cpb')
-                cpp += (cpb - candy) // cd + 1
-                candy += (cd - cpb)
+                gap = (cpb - candy) // cd + 1
+                cpp += gap
+                candy = candy + cd * gap
+                candy = candy % cpb
             else:
                 print('Sum of candies is larger than cpb')
-                cpp += 1
                 candy = candy - (candy // cpb) * cpb
-
     return False
 
 for i in range(T):
