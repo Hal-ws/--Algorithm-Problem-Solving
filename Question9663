@@ -2,10 +2,15 @@ N = int(input())
 
 board = [[0 for i in range(N)] for i in range(N)]
 
+#queens는 이미 queen들이 배치된 좌표를 리스트로 입력, 0행부터 순서대로 열의 좌표만 입력한다
+
 def path(queens, board):
     if queens == len(board):
         return True
     for i in range(len(board)):
-        
+        flag = 1
+        if 
+
+
 
 cnt = 0
