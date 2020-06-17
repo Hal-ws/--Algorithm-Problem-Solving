@@ -1,0 +1,11 @@
+N = int(input())
+
+board = [[0 for i in range(N)] for i in range(N)]
+
+def path(queens, board):
+    if queens == len(board):
+        return True
+    for i in range(len(board)):
+        
+
+cnt = 0
