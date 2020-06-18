@@ -1,0 +1,8 @@
+N, M = map(int, input().split())
+num = list(map(int, input().split()))
+
+place = []
+for i in range(len(num)):
+    place.append([num[i] - 1, N - num[i]])
+
+print(place)
