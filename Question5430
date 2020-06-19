@@ -9,7 +9,8 @@ def getans(num, p):
     for i in range(len(p) - 1):
         if p[i] == 'D':
             if leftIdx > rightIdx:
-                return 'error'
+                print('error')
+                return 0
             else:
                 if direction > 0:
                     leftIdx += 1
@@ -17,13 +18,19 @@ def getans(num, p):
                     rightIdx -= 1
         else:
             direction *= (-1)
+    if leftIdx > rightIdx:
+        print('[]')
+        return 0
     if  direction > 0:
-        for i in range(rightIdx - leftIdx + 1):
-            ans.append(num[leftIdx + i])
+        print('[', end='')
+        for i in range(rightIdx - leftIdx):
+            print(num[leftIdx + i], end=',')
+        print(str(num[rightIdx]) + str(']'))
     else:
-        for i in range(rightIdx - leftIdx + 1):
-            ans.append(num[rightIdx - i])
-    return ans
+        print('[', end='')
+        for i in range(rightIdx - leftIdx):
+            print(num[rightIdx - i], end=',')
+        print(str(num[leftIdx]) + str(']'))
 
 T = int(sys.stdin.readline())
 for i in range(T):
@@ -35,4 +42,4 @@ for i in range(T):
         num = list(map(int, num.split(',')))
     else:
         num = []
-    print(getans(num, p))
+    getans(num, p)
