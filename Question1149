@@ -1,0 +1,27 @@
+import sys
+sys.setrecursionlimit(10**6)
+
+N = int(sys.stdin.readline())
+cost = []
+memo = []
+for i in range(N):
+    cost.append(list(map(int, sys.stdin.readline().split())))
+
+def rgb(idx, before, sum):
+    if idx == N - 1:
+        memo.append(sum)
+        return
+    if before == 0:
+        rgb(idx + 1, 1, sum + cost[idx + 1][1])
+        rgb(idx + 1, 2, sum + cost[idx + 1][2])
+    elif before == 1:
+        rgb(idx + 1, 0, sum + cost[idx + 1][0])
+        rgb(idx + 1, 2, sum + cost[idx + 1][2])
+    else:
+        rgb(idx + 1, 0, sum + cost[idx + 1][0])
+        rgb(idx + 1, 1, sum + cost[idx + 1][1])
+
+rgb(0, 0, cost[0][0])
+rgb(0, 1, cost[0][1])
+rgb(0, 2, cost[0][2])
+print(min(memo))
