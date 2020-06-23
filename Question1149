@@ -25,3 +25,7 @@ rgb(0, 0, cost[0][0])
 rgb(0, 1, cost[0][1])
 rgb(0, 2, cost[0][2])
 print(min(memo))
+
+mincost = []
+def getmin(idx, color, sum): ## idx가 1,2,3..., color가 0,1,2 일때 구할수 있는 최소값을 구한다.
+
