@@ -3,29 +3,9 @@ sys.setrecursionlimit(10**6)
 
 N = int(sys.stdin.readline())
 cost = []
-memo = []
 for i in range(N):
     cost.append(list(map(int, sys.stdin.readline().split())))
-
-def rgb(idx, before, sum):
-    if idx == N - 1:
-        memo.append(sum)
-        return
-    if before == 0:
-        rgb(idx + 1, 1, sum + cost[idx + 1][1])
-        rgb(idx + 1, 2, sum + cost[idx + 1][2])
-    elif before == 1:
-        rgb(idx + 1, 0, sum + cost[idx + 1][0])
-        rgb(idx + 1, 2, sum + cost[idx + 1][2])
-    else:
-        rgb(idx + 1, 0, sum + cost[idx + 1][0])
-        rgb(idx + 1, 1, sum + cost[idx + 1][1])
-
-rgb(0, 0, cost[0][0])
-rgb(0, 1, cost[0][1])
-rgb(0, 2, cost[0][2])
-print(min(memo))
-
-mincost = []
-def getmin(idx, color, sum): ## idx가 1,2,3..., color가 0,1,2 일때 구할수 있는 최소값을 구한다.
-
+memo = [[cost[0][0], cost[0][1], cost[0][2]]]
+for idx in range(1, N):
+    memo.append([min([memo[idx - 1][1], memo[idx - 1][2]])  + cost[idx][0], min([memo[idx - 1][0], memo[idx - 1][2]])  + cost[idx][1], min([memo[idx - 1][0], memo[idx - 1][1]])  + cost[idx][2]])
+print(min(memo[N - 1]))
