@@ -1,0 +1,6 @@
+import sys
+N = int(sys.stdin.readline())
+wines = [0] * N
+for i in range(N):
+    wines.append(int(sys.stdin.readline()))
+
