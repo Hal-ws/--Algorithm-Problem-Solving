@@ -4,6 +4,7 @@ wines = [0] * N
 for i in range(N):
     wines[i] = int(sys.stdin.readline())
 
-dp = [[6, 1]]
+dp = [[[0, 0], [wines[0], 1]]]
 for i in range(N):
     nth = []
+    temp = []
