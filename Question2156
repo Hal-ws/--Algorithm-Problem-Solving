@@ -2,5 +2,8 @@ import sys
 N = int(sys.stdin.readline())
 wines = [0] * N
 for i in range(N):
-    wines.append(int(sys.stdin.readline()))
+    wines[i] = int(sys.stdin.readline())
 
+dp = [[6, 1]]
+for i in range(N):
+    nth = []
