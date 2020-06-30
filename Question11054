@@ -1,6 +1,6 @@
 import sys
 
-def findmax(temp, idx, val):
+def leftmax(temp, idx, val):
     a = 0
     for j in range(1, idx + 1):
         if temp[idx - j][0] < val and temp[idx - j][1] > a:
@@ -10,11 +10,22 @@ def findmax(temp, idx, val):
 
 N = int(sys.stdin.readline())
 series = list(map(int, sys.stdin.readline().split()))
-bitonics = [0] * N
-bitonics[0] = 1
+series[0] = [series[0], 1]
+for i in range(1, N):
+    series[i] = [series[i], 0]
+bitonics = [[0, 0]] * N
 
 for i in range(1, N - 1):
     temp = sorted(series[:i])
-    temp = sorted(series[i + 1:], reverse = True)
-
-print(max(bitonics))
+    left = leftmax(temp, i, series[i][0])
+    if left == 0:
+        series[i][1] = 1
+        bitonics[i][0] = 1
+    else:
+        print('left: ' + str(left))
+        series[i][1] = left + 1
+        bitonics[i][0] = left + 1
+        print(bitonics[i][0])
+        print(bitonics[i])
+        print(bitonics)
+    temp = sorted(series[i + 1:])
