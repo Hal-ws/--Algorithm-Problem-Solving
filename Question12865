@@ -6,28 +6,21 @@ stuffs = []
 for i in range(N):
     stuffs.append(list(map(int, sys.stdin.readline().split())))
 
-stuffs = sorted(stuffs)
-ans = [[stuffs[0][0], stuffs[0][1]]]
-std = 1
-add = 2
-for i in range(1, N):
-    flag = 0
-    possible = K
-    if possible >= stuffs[i][0] and stuffs[i][1] > 0:
-        temp = [[stuffs[i][0], stuffs[i][1]]]
-        for j in range(std):
-            possible = K - stuffs[i][0]
-            if possible >= ans[j][0]: ## 무게가 아직 더할 수 있는지 확인
-                temp.append([temp[0][0] + ans[j][0], temp[0][1] + ans[j][1]])
-                possible -= ans[j][0]
-        ans += temp
-        add = len(temp)
-        std += add
+dp = []
+dp.append([0] * (K + 1))
+for i in range(1, N + 1):
+    temp = [0] * (K + 1)
+    for j in range(K + 1):
+        if j >= stuffs[i - 1][0]:
+            temp[j] = max(dp[i - 1][j], stuffs[i - 1][1] + dp[i - 1][j - stuffs[i - 1][0]])
+        else:
+            temp[j] = dp[i - 1][j]
+    dp.append(temp)
 
-maxVal = 0
-l = len(ans)
-for i in range(l):
-    if maxVal <= ans[i][1]:
-        maxVal = ans[i][1]
 
-print(maxVal)
+ans = 0
+for i in range(N + 1):
+    if max(dp[i]) >= ans:
+        ans = max(dp[i])
+
+print(ans)
