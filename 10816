@@ -1,0 +1,20 @@
+def main():
+    N = int(input())
+    havingCards = list(map(int, input().split()))
+    M = int(input())
+    chkCard = list(map(int, input().split()))
+    havingCards = sorted(havingCards)
+    ans = [0] * M
+    for i in range(M):
+        ans[i] = cntCard(chkCard[i], havingCards)
+    for i in range(M):
+        print(ans[i], end = ' ')
+
+def cntCard(card, havingCards):
+
+    return
+
+if __name__ == "__main__":
+    main()
+
+    
