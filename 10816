@@ -6,15 +6,31 @@ def main():
     havingCards = sorted(havingCards)
     ans = [0] * M
     for i in range(M):
-        ans[i] = cntCard(chkCard[i], havingCards)
+        ans[i] = upperbound(chkCard[i], havingCards) - lowerbound(chkCard[i], havingCards)
     for i in range(M):
         print(ans[i], end = ' ')
 
-def cntCard(card, havingCards):
+def upperbound(card, havingCards):
+    low = 0
+    high = len(havingCards)
+    while low < high:
+        mid = (low + high) // 2
+        if card >= havingCards[mid]:
+            low = mid + 1
+        else:
+            high = mid
+    return low
 
-    return
+def lowerbound(card, havingCards):
+    low = 0
+    high = len(havingCards)
+    while low < high:
+        mid = (low + high) // 2
+        if card <= havingCards[mid]:
+            high = mid
+        else:
+            low = mid + 1
+    return low
 
 if __name__ == "__main__":
     main()
-
-    
