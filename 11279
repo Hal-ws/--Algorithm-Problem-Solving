@@ -1,0 +1,41 @@
+import sys
+
+
+def change(heap, idx1, idx2):
+    temp = heap[idx2]
+    heap[idx2] = heap[idx1]
+    heap[idx1] = temp
+
+
+def main():
+    N = int(sys.stdin.readline())
+    heap = [0]
+    l = 0
+    for i in range(N):
+        val = int(sys.stdin.readline())
+        if val == 0:
+            if l == 0:
+                print(0)
+            else:
+                print(heap[1])
+                if l > 3:
+                    if heap[2] < heap[3]:
+                        change(heap, 2, 3)
+                del heap[1]
+                l -= 1
+        else:
+            heap.append(val)
+            l += 1
+            idx = l
+            if idx > 1:
+                while idx > 1:
+                    if heap[idx // 2] < heap[idx]:
+                        change(heap, idx // 2, idx)
+                        idx = idx // 2
+                    else:
+                        break
+        print('heap after: ' + str(heap))
+
+
+if __name__ == "__main__":
+    main()
