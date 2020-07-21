@@ -1,0 +1,24 @@
+import sys
+
+def main():
+    T = int(sys.stdin.readline())
+    for i in range(T):
+        M, N, K = map(int, sys.stdin.readline().split())
+        field = [[0 for j in range(M)] for k in range(N)]
+        setbugs(K, field)
+        bfs(field)
+
+def bfs(field, N, M):
+    for i in range(N):
+        for j in range(M):
+            if type[field[i][j]] == list:
+                queue = []
+                
+
+def setbugs(K, field):
+    for k in range(K):
+        X, Y = map(int, sys.stdin.readline().split())
+        field[Y][X] = 1
+
+if __name__ == "__main__":
+    main()
