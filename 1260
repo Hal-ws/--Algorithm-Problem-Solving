@@ -1,0 +1,51 @@
+import sys
+import copy
+
+
+def main():
+    N, M, V = map(int, sys.stdin.readline().split())
+    inputList = []
+    for i in range(M):
+        inputList.append(sorted(list(map(int, sys.stdin.readline().split()))))
+    inputList = sorted(inputList)
+    print(inputList)
+    linked = [[] for i in range(N)]
+    for i in range(M):
+        linked[inputList[i][0] - 1].append(inputList[i][1])
+    for i in range(M):
+        linked[i] = sorted(linked[i], reverse = True)
+    forDfs = copy.deepcopy(linked)
+    forDfs = dfs(forDfs, V)
+    printList(forDfs)
+    forBfs = copy.deepcopy(linked)
+    forBfs = bfs(forBfs, V)
+    printList(forBfs)
+
+
+def dfs(linked, V):
+    ans = [V]
+    stack = [V]
+    while len(stack) > 0:
+        l = len(linked[V - 1])
+        snode = ans[len(ans) - 1] ## 새로 시작하는 node
+        for i in range(l):
+            stack.append(linked[snode - 1][i]) ## stack 에 해당 node에 연결된 nodes를 더함
+        sl = len(stack)
+
+
+    return ans
+
+
+def bfs(linked, V):
+    ans = [V]
+    return ans
+
+
+def printList(list):
+    l = len(list)
+    for i in range(l):
+        print(list[i], end = ' ')
+
+
+if __name__ == "__main__":
+    main()
