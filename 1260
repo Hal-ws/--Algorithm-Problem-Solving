@@ -37,8 +37,8 @@ def dfs(linked, V):
         node = ans[len(ans) - 1] ## 지금 위치한 node
         for i in range(l):
             if linked[node - 1][i] not in stack and linked[node - 1][i] not in ans:
-                stack.append(linked[node - 1][i]) ## stack 에 해당 node에 연결된 nodes를 더함
-            else: ## 기존 stack 에 있는 경우에는 기존 stack 을 삭제하고 stack에 추가
+                stack.append(linked[node - 1][i])
+            elif linked[node - 1][i] in stack and linked[node - 1][i] not in ans:
                 stack.append(linked[node - 1][i])
                 del stack[stack.index(linked[node - 1][i])]
         print('ans: ' + str(ans))
