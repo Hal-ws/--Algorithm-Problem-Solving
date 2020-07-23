@@ -18,9 +18,12 @@ def main():
         linked[i] = temp
     for i in range(N):
         linked[i] = sorted(linked[i], reverse = True)
-    forDfs = copy.deepcopy(linked)
-    forDfs = dfs(forDfs, V)
-    print('ans: ' + str(forDfs))
+    dfsAns = dfs(linked, V)
+    for i in range(N):
+        linked[i] = sorted(linked[i])
+    bfsAns = bfs(linked, V)
+       
+
 
 def dfs(linked, V):
     ans = [] ## 방문한 node 순서대로
@@ -41,14 +44,17 @@ def dfs(linked, V):
             elif linked[node - 1][i] in stack and linked[node - 1][i] not in ans:
                 stack.append(linked[node - 1][i])
                 del stack[stack.index(linked[node - 1][i])]
-        print('ans: ' + str(ans))
-        print('stack: ' + str(stack))
-        print('----------------------')
     return ans
 
 
 def bfs(linked, V):
-    ans = [V]
+    ans = []
+    queue = [V]
+
+    while len(queue) > 0:
+        for j in range(len(linked[queue[j]])):
+            queue.append(linked[])
+
     return ans
 
 
