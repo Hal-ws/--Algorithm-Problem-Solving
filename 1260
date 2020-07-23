@@ -18,11 +18,12 @@ def main():
         linked[i] = temp
     for i in range(N):
         linked[i] = sorted(linked[i], reverse = True)
-    dfsAns = dfs(linked, V)
+##    dfsAns = dfs(linked, V)
     for i in range(N):
         linked[i] = sorted(linked[i])
     bfsAns = bfs(linked, V)
-       
+    print(bfsAns)
+
 
 
 def dfs(linked, V):
@@ -50,11 +51,13 @@ def dfs(linked, V):
 def bfs(linked, V):
     ans = []
     queue = [V]
-
     while len(queue) > 0:
-        for j in range(len(linked[queue[j]])):
-            queue.append(linked[])
-
+        for i in range(len(queue)):
+            for j in range(len(linked[queue[i] - 1])):
+                if linked[queue[i] - 1][j] not in queue and linked[queue[i] - 1][j] not in ans:
+                    queue.append(linked[queue[i] - 1][j])
+            ans.append(queue[0])
+            del queue[0]
     return ans
 
 
