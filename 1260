@@ -7,32 +7,43 @@ def main():
     inputList = []
     for i in range(M):
         inputList.append(sorted(list(map(int, sys.stdin.readline().split()))))
-    inputList = sorted(inputList)
-    print(inputList)
-    linked = [[] for i in range(N)]
-    for i in range(M):
-        linked[inputList[i][0] - 1].append(inputList[i][1])
-    for i in range(M):
+    linked = [0] * N
+    for i in range(N):
+        temp = []
+        for j in range(M):
+            if inputList[j][0] == i + 1:
+                temp.append(inputList[j][1])
+            elif inputList[j][1] == i + 1:
+                temp.append(inputList[j][0])
+        linked[i] = temp
+    for i in range(N):
         linked[i] = sorted(linked[i], reverse = True)
     forDfs = copy.deepcopy(linked)
     forDfs = dfs(forDfs, V)
-    printList(forDfs)
-    forBfs = copy.deepcopy(linked)
-    forBfs = bfs(forBfs, V)
-    printList(forBfs)
-
+    print('ans: ' + str(forDfs))
 
 def dfs(linked, V):
-    ans = [V]
-    stack = [V]
+    ans = [] ## 방문한 node 순서대로
+    stack = [V] ## stack에 저장된 node
+    check = [False] * len(linked) ## 해당 노드에 방문을 했는지 확인
     while len(stack) > 0:
-        l = len(linked[V - 1])
-        snode = ans[len(ans) - 1] ## 새로 시작하는 node
-        for i in range(l):
-            stack.append(linked[snode - 1][i]) ## stack 에 해당 node에 연결된 nodes를 더함
         sl = len(stack)
-
-
+        if check[stack[sl - 1] - 1] == False: ## 방문하지 않은 노드일 때에만 ans에 추가한다.
+            ans.append(stack[sl - 1]) ## stack 마지막에 있는 node에 방문
+            check[stack[sl - 1] - 1] = True
+        del stack[sl - 1] ## 방문한 node 삭제
+        al = len(ans)
+        l = len(linked[ans[al - 1] - 1]) ## 해당 노드에 연결된 node의 수
+        node = ans[len(ans) - 1] ## 지금 위치한 node
+        for i in range(l):
+            if linked[node - 1][i] not in stack and linked[node - 1][i] not in ans:
+                stack.append(linked[node - 1][i]) ## stack 에 해당 node에 연결된 nodes를 더함
+            else: ## 기존 stack 에 있는 경우에는 기존 stack 을 삭제하고 stack에 추가
+                stack.append(linked[node - 1][i])
+                del stack[stack.index(linked[node - 1][i])]
+        print('ans: ' + str(ans))
+        print('stack: ' + str(stack))
+        print('----------------------')
     return ans
 
 
