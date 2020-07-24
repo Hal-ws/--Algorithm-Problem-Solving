@@ -1,0 +1,24 @@
+import sys
+
+def main():
+    start = sys.stdin.readline()
+    start = start[:len(start) - 1]
+    global point, length
+    point = len(start)
+    length = len(start)
+    M = int(sys.stdin.readline())
+    for i in range(M):
+        command = sys.stdin.readline()
+        if command[0] == "L":
+            movepoint("L")
+
+def movepoint(direction):
+    if direction == "L" and point > 1:
+        point -= 1
+    elif direction == "D" and point < length:
+        point += 1
+
+
+
+if __name__ == "__main()__":
+    main()
