@@ -4,38 +4,59 @@ import sys
 def main():
     word = sys.stdin.readline()
     word = word[:len(word) - 1]
-    global cursor, length
-    cursor = len(word)
-    length = len(word)
+    global cursor, length  ## cursor - 1 : 자기 현재 cursor의 왼쪽에 위치한 문자의 index를 표시.
+    cursor, length = len(word), len(word)
     linked = []
-    for i in range(length):
+    for i in range(cursor):
         linked.append([i - 1, word[i], i + 1])
-    linked[length - 1][2] = None
+    linked[cursor - 1][2] = None
     linked[0][0] = None
-    print(linked)
-    M = int(sys.stdin.readline()) ## 명령어
+    M = int(sys.stdin.readline())
     for i in range(M):
         command = sys.stdin.readline()
         if command[0] == "L":
-            movecursor("L")
+            movecursor(linked, "L")
         elif command[0] == "D":
-            movecursor("D")
+            movecursor(linked, "D")
         elif command[0] == "B":
-            backSpace(linked)
+            linked = backSpace(linked)
         else:
-            insert(linked, command[2])
+            linked = insert(linked, command[2])
 
 def backSpace(linked):
-    return
-def movecursor(direction):
-    global cursor, length
-    if direction == "L" and cursor > 0:
-        cursor -= 1
-    elif direction == "D" and cursor < length:
-        cursor += 1
-def insert(linked, adding):
+    global cursor
+    if cursor > 0:
+        if linked[cursor - 1][0] != None:
+            linked[linked[cursor - 1][0]][2] = linked[cursor - 1][2]
+            linked[linked[cursor - 1][2]][0] = linked[cursor - 1][0]
+        else:
+            linked[linked[cursor - 1][2]][0] = linked[cursor - 1][0]
+        linked[cursor - 1][0] = None
+        linked[cursor - 1][2] = None
+    return linked
 
-    return
+
+def movecursor(linked, direction):
+    global cursor
+    if direction == "L" and cursor > 0:
+        if linked[cursor - 1][0] == None:
+            cursor = 0
+        else:
+            cursor = linked[cursor - 1][0] + 1
+    if direction == "D":
+        if linked[cursor - 1][2] != None:
+            cursor = linked[cursor - 1][2] + 1
+
+def insert(linked, add):
+    global cursor, length
+    if cursor == 0:
+        pre = None
+        next = 0
+    elif
+
+    length += 1
+    cursor = length
+    return linked
 
 
 if __name__ == "__main__":
