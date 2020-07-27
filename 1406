@@ -1,24 +1,42 @@
 import sys
 
+
 def main():
-    start = sys.stdin.readline()
-    start = start[:len(start) - 1]
-    global point, length
-    point = len(start)
-    length = len(start)
-    M = int(sys.stdin.readline())
+    word = sys.stdin.readline()
+    word = word[:len(word) - 1]
+    global cursor, length
+    cursor = len(word)
+    length = len(word)
+    linked = []
+    for i in range(length):
+        linked.append([i - 1, word[i], i + 1])
+    linked[length - 1][2] = None
+    linked[0][0] = None
+    print(linked)
+    M = int(sys.stdin.readline()) ## 명령어
     for i in range(M):
         command = sys.stdin.readline()
         if command[0] == "L":
-            movepoint("L")
+            movecursor("L")
+        elif command[0] == "D":
+            movecursor("D")
+        elif command[0] == "B":
+            backSpace(linked)
+        else:
+            insert(linked, command[2])
 
-def movepoint(direction):
-    if direction == "L" and point > 1:
-        point -= 1
-    elif direction == "D" and point < length:
-        point += 1
+def backSpace(linked):
+    return
+def movecursor(direction):
+    global cursor, length
+    if direction == "L" and cursor > 0:
+        cursor -= 1
+    elif direction == "D" and cursor < length:
+        cursor += 1
+def insert(linked, adding):
+
+    return
 
 
-
-if __name__ == "__main()__":
+if __name__ == "__main__":
     main()
