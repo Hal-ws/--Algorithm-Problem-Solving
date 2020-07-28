@@ -23,7 +23,6 @@ def main():
             linked = backSpace(linked)
         else:
             linked = insert(linked, command[2])
-        print('cursor: ' + str(cursor) + ' firstIdx: ' + str(firstIdx) + ' length: ' + str(length) + ' linked: ' + str(linked))
     printlinked(linked, firstIdx)
 
 def backSpace(linked):
@@ -67,7 +66,6 @@ def insert(linked, add):
     if cursor == 0: ## 맨 앞에 삽입할때
         pre = None
         next = firstIdx ## 현재의 firstIdx 가 next값이 된다.
-        firstIdx = length ## 새로 추가한게 first idx가 됨
     elif linked[cursor - 1][2] == None: ## 맨 뒤에 삽입할때
         pre = cursor - 1
         next = None
@@ -76,8 +74,10 @@ def insert(linked, add):
         pre = cursor - 1
         next = linked[cursor - 1][2]
     linked.append([pre, add, next])
+    if cursor == 0:
+        firstIdx = len(linked) - 1
     length += 1
-    cursor = length
+    cursor = len(linked)
     if pre == None:
         linked[next][0] = cursor - 1
     elif next == None:
