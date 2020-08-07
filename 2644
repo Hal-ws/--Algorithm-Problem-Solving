@@ -1,0 +1,54 @@
+import sys
+from collections import deque
+
+
+def main():
+    N = int(sys.stdin.readline())
+    relations = list(map(int, sys.stdin.readline().split()))
+    m = int(sys.stdin.readline())
+    matrix = [[0 for i in range(N + 1)] for j in range(N + 1)]
+    for i in range(m):
+        a, b = map(int, sys.stdin.readline().split())
+        matrix[a][b] = 1
+        matrix[b][a] = 1
+    for i in range(N):
+        print(matrix[i])
+    print(bfs(matrix, N, relations[0], relations[1]))
+
+
+
+def bfs(matrix, N, personA, personB):
+    q = deque()
+    visited = [0] * (N + 1)
+    flag = 0
+    visited[personA] = 1
+    for i in range(N + 1):
+        if matrix[personA][i] == 1:
+            q.append(i)
+            visited[i] = 1
+            if i == personB:
+                flag = 1
+                break
+    distance = 1
+    l = len(q)
+    if flag == 0:
+        while l > 0:
+            for i in range(N + 1): ## i가 새로 방문할 node
+                if matrix[q[0]][i] == 1 and visited[i] == 0:
+                    if matrix[q[0]][i] == personB:
+                        return distance
+                    q.append(i)
+                    visited[i] = 1
+                    l += 1
+            print('q: ' + str(q))
+            for j in range(i + 1):
+                q.popleft()
+                l -= 1
+
+            distance += 1
+    return -1
+
+
+
+if __name__ == "__main__":
+    main()
