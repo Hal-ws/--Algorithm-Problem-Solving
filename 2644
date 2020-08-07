@@ -11,11 +11,7 @@ def main():
         a, b = map(int, sys.stdin.readline().split())
         matrix[a][b] = 1
         matrix[b][a] = 1
-    for i in range(N):
-        print(matrix[i])
     print(bfs(matrix, N, relations[0], relations[1]))
-
-
 
 def bfs(matrix, N, personA, personB):
     q = deque()
@@ -30,24 +26,24 @@ def bfs(matrix, N, personA, personB):
                 flag = 1
                 break
     distance = 1
-    l = len(q)
+    lb = len(q)
+    la = len(q)
     if flag == 0:
-        while l > 0:
-            for i in range(N + 1): ## i가 새로 방문할 node
-                if matrix[q[0]][i] == 1 and visited[i] == 0:
-                    if matrix[q[0]][i] == personB:
-                        return distance
-                    q.append(i)
-                    visited[i] = 1
-                    l += 1
-            print('q: ' + str(q))
-            for j in range(i + 1):
+        while la > 0:
+            for i in range(lb): ## q[i]: 지금 q에 쌓여있는 node의 번호
+                for j in range(N + 1): ## j: q[i]와 연결된 node의 번호
+                    if matrix[q[i]][j] == 1 and visited[j] == 0:
+                        if j == personB:
+                            return distance + 1
+                        q.append(j)
+                        visited[j] = 1
+                        la += 1
+            for j in range(lb):
                 q.popleft()
-                l -= 1
-
+                la -= 1
+            lb = la
             distance += 1
     return -1
-
 
 
 if __name__ == "__main__":
