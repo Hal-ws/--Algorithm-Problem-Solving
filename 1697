@@ -10,33 +10,35 @@ def main():
     q.append(['d', 2 * N])
     if q[0] == K or q[1] == K or q[2] == K:
         return 1
+    print(bfs(q, K))
+
+def bfs(q, K):
     lb, la = 3, 3
     seconds = 1
-    print(q)
     while 1:
         for i in range(lb):
             if q[i][0] == 'm':
-                q.append['m', q[i][1] - 1]
-                q.append['d', q[i][1] * 2]
+                q.append(['m', q[i][1] - 1])
+                q.append(['d', q[i][1] * 2])
                 la += 2
             elif q[i][0] == 'p':
-                q.append['p', q[i][1] + 1]
-                q.append['d', q[i][1] * 2]
+                q.append(['p', q[i][1] + 1])
+                q.append(['d', q[i][1] * 2])
                 la += 2
             else:
-                q.append['m', q[i][1] - 1]
-                q.append['p', q[i][1] + 1]
-                q.append['d', q[i][1] * 2]
+                q.append(['m', q[i][1] - 1])
+                q.append(['p', q[i][1] + 1])
+                q.append(['d', q[i][1] * 2])
                 la += 3
-        for i in range(la):
-            if q[i][1] == K:
-                return seconds + 1
         for i in range(lb):
             q.popleft()
             la -= 1
+        for i in range(la):
+            if q[i][1] == K:
+                return seconds + 1
         lb = la
         seconds += 1
-
+    print(seconds)
 
 if __name__ == "__main__":
     main()
