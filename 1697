@@ -1,0 +1,22 @@
+import sys
+from collections import deque
+
+
+def main():
+    N, K = map(int, sys.stdin.readline().split())
+    q = deque()
+    q.append(['m', N - 1])
+    q.append(['p', N + 1])
+    q.append(['d', 2 * N])
+    lb, la = 3, 3
+    while 1:
+
+
+
+
+
+    return
+
+
+if __name__ == "__main__":
+    main()
