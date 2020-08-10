@@ -21,21 +21,24 @@ def bfs(q, K):
                 q.append(['m', q[i][1] - 1])
                 q.append(['d', q[i][1] * 2])
                 la += 2
+                if q[la - 2][1] == K or q[la - 1][1] == K:
+                    return seconds + 1
             elif q[i][0] == 'p':
                 q.append(['p', q[i][1] + 1])
                 q.append(['d', q[i][1] * 2])
                 la += 2
+                if q[la - 2][1] == K or q[la - 1][1] == K:
+                    return seconds + 1
             else:
                 q.append(['m', q[i][1] - 1])
                 q.append(['p', q[i][1] + 1])
                 q.append(['d', q[i][1] * 2])
                 la += 3
+                if q[la - 3][1] == K or q[la - 2][1] == K or q[la - 1][1] == K:
+                    return seconds + 1
         for i in range(lb):
             q.popleft()
             la -= 1
-        for i in range(la):
-            if q[i][1] == K:
-                return seconds + 1
         lb = la
         seconds += 1
     print(seconds)
