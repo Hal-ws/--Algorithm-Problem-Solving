@@ -8,11 +8,13 @@ def main():
     q.append(['m', N - 1])
     q.append(['p', N + 1])
     q.append(['d', 2 * N])
-    if q[0] == K or q[1] == K or q[2] == K:
-        return 1
-    print(bfs(q, K))
+    print(bfs(q, N, K))
 
-def bfs(q, K):
+def bfs(q, N, K):
+    if N == K:
+        return 0
+    if q[0][1] == K or q[1][1] == K or q[2][1] == K:
+        return 1
     lb, la = 3, 3
     seconds = 1
     while 1:
