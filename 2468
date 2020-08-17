@@ -47,7 +47,7 @@ def getarea(town, height, N):
                     if q[0][1] > 0 and town[q[0][0]][q[0][1] - 1] != 0 and visited[q[0][0]][q[0][1] - 1] == 0:
                         q.append([q[0][0], q[0][1] - 1])
                         visited[q[0][0]][q[0][1] - 1] = 1
-                    if q[0][1] < N - 1 and town[q[0][0]][q[0][1]] != 0 and visited[q[0][0]][q[0][1]] == 0:
+                    if q[0][1] < N - 1 and town[q[0][0]][q[0][1] + 1] != 0 and visited[q[0][0]][q[0][1] + 1] == 0:
                         q.append([q[0][0], q[0][1] + 1])
                         visited[q[0][0]][q[0][1] + 1] = 1
                     q.popleft()
