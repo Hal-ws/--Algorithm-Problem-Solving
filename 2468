@@ -16,7 +16,7 @@ def main():
         if tempMin < minHeight:
             minHeight = tempMin
     ans = 0
-    for i in range(tempMin, tempMax + 1):
+    for i in range(tempMin - 1, tempMax + 1):
         temp = getarea(town, i, N)
         if temp > ans:
             ans = temp
