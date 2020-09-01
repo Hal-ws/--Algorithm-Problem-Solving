@@ -24,7 +24,6 @@ def melting(n, m, plate, leftcheese):
     visitChk = [[0 for i in range(m)] for j in range(n)]
     visitChk[0][0] = 1
     while len(q) > 0:
-        print('q: %s' %q)
         if q[0][0] < n - 1:
             if plate[q[0][0] + 1][q[0][1]] == 1 and meltingChk[q[0][0] + 1][q[0][1]] == 0:
                 meltingChk[q[0][0] + 1][q[0][1]] = 1
@@ -37,7 +36,7 @@ def melting(n, m, plate, leftcheese):
                 meltingChk[q[0][0] - 1][q[0][1]] = 1
                 leftcheese -= 1
             if plate[q[0][0] - 1][q[0][1]] == 0 and visitChk[q[0][0] - 1][q[0][1]] == 0:
-                q.append([q[0][0] + 1, q[0][1]])
+                q.append([q[0][0] - 1, q[0][1]])
                 visitChk[q[0][0] - 1][q[0][1]] = 1
         if q[0][1] < m - 1:
             if plate[q[0][0]][q[0][1] + 1] == 1 and meltingChk[q[0][0]][q[0][1] + 1] == 0:
@@ -58,9 +57,6 @@ def melting(n, m, plate, leftcheese):
         for j in range(m):
             if meltingChk[i][j]:
                 plate[i][j] = 0
-    for i in range(n):
-        print(plate[i])
-    print('-----------------------------------------------')
     return leftcheese
 if __name__ == "__main__":
     main()
