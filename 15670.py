@@ -14,7 +14,13 @@ def main():
 
 
 def countuplen(N, todayRoad):
-    cnt = 0
+    cnt, start, end = 0, 0, 0
+    if N < 2:
+        return 1
+    while end < N - 1:
+        cnt += 1
+        
+
     return cnt
 
 if __name__ == "__main__":
