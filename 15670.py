@@ -10,23 +10,21 @@ def main():
         temp = todayRoad[start - 1:end]
         temp.reverse()
         todayRoad = todayRoad[:start - 1] + temp + todayRoad[end:]
-        print('todayRoad: %s' %todayRoad)
         print(countuplen(N, todayRoad))
 
 
 def countuplen(N, todayRoad):
-    cnt, start, end = 0, 0, 0
+    cnt, start = 0, 0
     if N < 2:
         return 1
-    while end < N:
+    while start < N - 1:
         cnt += 1
-        end = start + 1
-        print('start: %s end: %s' % (start, end))
-        for i in range(end, N):
-            print('i: %s' %i)
+        for i in range(start + 1, N):
             if todayRoad[i] < todayRoad[i - 1]:
-                start = i
                 break
+        start = i
+    if todayRoad[N - 1] < todayRoad[N - 2]:
+        cnt += 1
     return cnt
 
 if __name__ == "__main__":
