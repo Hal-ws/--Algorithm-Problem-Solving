@@ -1,5 +1,7 @@
 import sys
 from queue import PriorityQueue
+
+
 def main():
     plusque, minusque, cntPlus, cntMinus = PriorityQueue(), PriorityQueue(), 0, 0
     N = int(sys.stdin.readline())
@@ -20,7 +22,7 @@ def main():
                 print(plusque.get())
                 cntPlus -= 1
             elif cntPlus == 0 and cntMinus > 0:
-                print(minusque.get())
+                print(minusque.get() * (-1))
                 cntMinus -= 1
             else:
                 print(0)
