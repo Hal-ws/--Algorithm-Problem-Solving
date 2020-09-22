@@ -11,10 +11,11 @@ def main():
     if cnt == 1:
         print(0)
     else:
-        standard = que.get()
         for i in range(cnt - 1):
-            standard += que.get()
-            answer += standard
+            first = que.get()
+            second = que.get()
+            answer += (first + second)
+            que.put(first + second)
         print(answer)
 
 if __name__ == "__main__":
