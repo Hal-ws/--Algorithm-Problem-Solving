@@ -47,6 +47,7 @@ def rollingdice(paper, dice, pos, order):
         paper[pos[0]][pos[1]] = dice[0]
     else:
         dice[0] = paper[pos[0]][pos[1]]
+        paper[pos[0]][pos[1]] = 0
     return dice[1]
 
 
