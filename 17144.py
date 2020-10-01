@@ -12,13 +12,17 @@ def main():
             break
     for i in range(T):
         disperse(room, R, C)
+        for j in range(R):
+            print(room[j])
+        print('-----------------------------------------')
         circulation(room, R, C, acPos)
         for j in range(R):
             print(room[j])
+        print('-----------------------------------------')
     ans = 0
     for i in range(R):
         ans += sum(room[i])
-    print(ans)
+    print(ans + 2)
 
 
 def disperse(room, R, C):
@@ -61,13 +65,11 @@ def circulation(room, R, C, acPos):
     rightmove(room, C, acPos + 1)
     if room[R - 1][C - 1] != 0:
         rdB = room[R - 1][C - 1]
-    rightdown(room, acPos + 1, rB, C)
+    rightdown(room, acPos + 1, rB, R, C)
     if room[R - 1][0] != 0:
         ldB = room[R - 1][0]
     leftdown(room, R, C, rdB)
-    leftup(room, R, acPos + 1, ldB)
-
-
+    upleft(room, R, acPos + 1, ldB)
 
 
 def rightmove(room, C, acPos):
@@ -81,18 +83,9 @@ def rightmove(room, C, acPos):
 def upmove(room, C, acPos, rB):
     for i in range(0, acPos):
         if i == acPos - 1:
-            room[i][C - 1]= rB
+            room[i][C - 1] = rB
         else:
             room[i][C - 1] = room[i + 1][C - 1]
-
-
-def leftup(room, R, acPos, ldB):
-    for i in range(acPos + 1, R - 1):
-        if i == R - 2:
-            room[i][0] = ldB
-        else:
-            room[i][0] = room[i + 1][0]
-
 
 
 def leftmove(room, C, ruB):
@@ -103,14 +96,6 @@ def leftmove(room, C, ruB):
             room[0][i] = room[0][i + 1]
 
 
-def leftdown(room, R, C, rdB):
-    for i in range(0, C - 1):
-        if i == C - 2:
-            room[R - 1][i] = rdB
-        else:
-            room[R - 1][i] = room[R - 1][i + 1]
-
-
 def downmove(room, acPos, lub):
     for i in range(1, acPos):
         if i == 1:
@@ -119,13 +104,29 @@ def downmove(room, acPos, lub):
             room[i][0] = room[i - 1][0]
 
 
-def rightdown(room, acPos, rB, C):
-    for i in range(acPos + 1, C):
-        print('i: %s' %i)
+def leftdown(room, R, C, rdB):
+    for i in range(0, C - 1):
+        if i == C - 2:
+            room[R - 1][i] = rdB
+        else:
+            room[R - 1][i] = room[R - 1][i + 1]
+
+
+def upleft(room, R, acPos, ldB):
+    for i in range(acPos + 1, R - 1):
+        if i == R - 2:
+            room[i][0] = ldB
+        else:
+            room[i][0] = room[i + 1][0]
+
+
+
+def rightdown(room, acPos, rB, R, C):
+    for i in range(R - 1, acPos, - 1):
         if i == acPos + 1:
             room[i][C - 1] = rB
         else:
-            room[i][C - 1]= room[i - 1][C - 1]
+            room[i][C - 1] = room[i - 1][C - 1]
 
 
 if __name__ == "__main__":
