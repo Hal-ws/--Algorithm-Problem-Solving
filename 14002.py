@@ -5,10 +5,17 @@ def main():
     ansList = [[nums[0]]] + [0] * (N - 1)
     for i in range(1, N):
         dp.append(getVal(dp, nums, ansList, i))
-    la = len(ansList[N - 1])
+    ansIdx = 0
+    ansLen = len(ansList[0])
+    for i in range(1, N):
+        tempLen = len(ansList[i])
+        if tempLen >= ansLen:
+            ansIdx = i
+            ansLen = tempLen
+    la = len(ansList[ansIdx])
     print(la)
     for i in range(la):
-        print(ansList[N - 1][i], end = ' ')
+        print(ansList[ansIdx][i], end=' ')
 
 
 def getVal(dp, nums, ansList, idx):
