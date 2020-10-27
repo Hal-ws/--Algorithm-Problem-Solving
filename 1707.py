@@ -12,15 +12,22 @@ def main():
             a, b = map(int, sys.stdin.readline().split())
             connect[a].append(b)
             connect[b].append(a)
-        print(bfs(connect, color, V)) # 1번 정점부터 시작해서 순회 시작
+        visitChk = [0] * (V + 1) #0번 idx에는 방문한 노드의 총 개수 저장
+        for j in range(1, V + 1):
+            if visitChk[j] == 0:
+                ans = bfs(connect, color, visitChk, j, V)
+            if ans == "NO" or ans == "YES":
+                print(ans)
+                break
 
 
-def bfs(connect, color, V):
-    visitChk = [0] * (V + 1)
+
+def bfs(connect, color, visitChk, start, V):
     q = deque()
-    q.append(1)
-    color[1] = 1 ## 1: white, 2: black
-    visitChk[1] = 1
+    q.append(start)
+    color[start] = 1 ## 1: white, 2: black
+    visitChk[start] = 1
+    visitChk[0] += 1
     while len(q) > 0:
         l = len(connect[q[0]])
         for i in range(1, l):
@@ -30,12 +37,14 @@ def bfs(connect, color, V):
                 else:
                     color[connect[q[0]][i]] = 1
                 visitChk[connect[q[0]][i]] = 1
+                visitChk[0] += 1
                 q.append(connect[q[0]][i])
             else: ## 이미 방문한 곳일때
                 if color[connect[q[0]][0]] == color[connect[q[0]][i]]:
                     return "NO"
         del q[0]
-    return "YES"
+    if visitChk[0] == V:
+        return "YES"
 
 
 if __name__ == "__main__":
