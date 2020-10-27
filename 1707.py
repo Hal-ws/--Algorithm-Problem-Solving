@@ -1,5 +1,5 @@
 import sys
-from queue import deque
+from collections import deque
 
 
 def main():
@@ -35,7 +35,6 @@ def bfs(connect, color, V):
                 if color[connect[q[0]][0]] == color[connect[q[0]][i]]:
                     return "NO"
         del q[0]
-
     return "YES"
 
 
