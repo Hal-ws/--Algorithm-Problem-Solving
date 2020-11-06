@@ -4,7 +4,7 @@ def main():
     N = int(N)
     ans = [0] * 10
     for i in range(10):
-        ans[i] = getdigit(N, i, lN) #33
+        ans[i] = getdigit(N, i, lN)
     for i in range(10):
         print(ans[i], end=' ')
 
@@ -12,6 +12,7 @@ def main():
 def getdigit(N, num, lN): ## 각 자리수마다의 num(0~9)의 합을 구함
     ans = 0
     Ns = str(N)
+    lN = len(Ns)
     for i in range(1, lN + 1): ## i: i번째 자리에 오는걸 구함
         if i == 1:
             if num == 0:
@@ -37,7 +38,11 @@ def getdigit(N, num, lN): ## 각 자리수마다의 num(0~9)의 합을 구함
                 ans += (N // pow(10, i) - 1) * pow(10, i - 1)
                 ans += N % pow(10, i - 1) + 1
             if num == 0:
-                ans += (N // pow(10, i) - 1) * (pow(10, i - 1)) + (N % pow(10, i - 1) + 1)
+                ans += (N // pow(10, i) - 1) * pow(10, i - 1)
+                if int(Ns[lN - i]) == 0:
+                    ans += N % pow(10, i - 1) + 1
+                else:
+                    ans += pow(10, i - 1)
     return ans
 
 
