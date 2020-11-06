@@ -26,12 +26,18 @@ def getdigit(N, num, lN): ## 각 자리수마다의 num(0~9)의 합을 구함
             if int(Ns[lN - i]) > num and num != 0:
                 ans += pow(10, lN - 1)
         else:
-            if int(Ns[lN - i]) >= num and num != 0:
-                ans += (N // pow(10, i) + 1) * (N % pow(10, i) + 1)
+            if int(Ns[lN - i]) > num and num != 0:
+                ans += pow(10, i - 1)
+                ans += (N // pow(10, i)) * pow(10, i - 1)
             if int(Ns[lN - i]) < num and num != 0:
-                ans += (N // pow(10, i)) * 10
+                ans += pow(10, i - 1)
+                ans += (N // pow(10, i) - 1) * pow(10, i - 1)
+            if int(Ns[lN - i]) == num and num != 0:
+                ans += pow(10, i - 1)
+                ans += (N // pow(10, i) - 1) * pow(10, i - 1)
+                ans += N % pow(10, i - 1) + 1
             if num == 0:
-                ans += (N // pow(10, i)) * 10
+                ans += (N // pow(10, i) - 1) * (pow(10, i - 1)) + (N % pow(10, i - 1) + 1)
     return ans
 
 
