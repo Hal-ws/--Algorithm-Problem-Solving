@@ -1,38 +1,33 @@
+from collections import deque
+
+
 def main():
     S = int(input())
-    timeresult = [[[2, 1]], [[3, 1]]] ## 2, 3초에 생기는 경우의수
-    time = 4
-    if S == 2:
-        print(2)
-    else:
-        endflag = 0
-        while 1:
-            first = timeresult[0]
-            second = timeresult[1]
-            temp = []
-            l1 = len(first)
-            l2 = len(second)
-            for i in range(l1):
-                if first[i][0] * 2 == S:
-                    endflag = 1
-                    break
-                temp.append([first[i][0] * 2, first[i][0]])
-            for i in range(l2):
-                if second[i][0] + second[i][1] == S:
-                    endflag = 1
-                    break
-                temp.append([second[i][0] + second[i][1], second[i][1]])
-                if second[i][0] - 1 > 4:
-                    if second[i][0] - 1 == S:
-                        endflag = 1
-                        break
-                    temp.append([second[i][0] - 1, second[i][1]])
-            if endflag:
-                break
-            timeresult[0] = timeresult[1]
-            timeresult[1] = temp
-            time += 1
-        print(time)
+    chk = [[-1 for i in range(2001)] for j in range(2001)] #도착시간 걸어둠
+    chk[1][0] = 0
+    chk[2][1] = 2
+    q = deque()
+    q.append([1, 0, 0]) # 개수, 클립보드 저장된 양, 시간
+    q.append([2, 1, 2])
+    while len(q) > 0:
+        if q[0][0] * 2 <= 2000: # 2배 곱함
+            if chk[q[0][0] * 2][q[0][0]] == - 1 or chk[q[0][0] * 2][q[0][0]] > q[0][2] + 2:
+                chk[q[0][0] * 2][q[0][0]] = q[0][2] + 2
+                q.append([q[0][0] * 2, q[0][0], q[0][2] + 2])
+        if q[0][0] + q[0][1] <= 2000: # 지금 클립보드에 저장된값 더함
+            if chk[q[0][0] + q[0][1]][q[0][1]] == -1 or chk[q[0][0] + q[0][1]][q[0][1]] > q[0][2] + 1:
+                chk[q[0][0] + q[0][1]][q[0][1]] = q[0][2] + 1
+                q.append([q[0][0] + q[0][1], q[0][1], q[0][2] + 1])
+        if q[0][0] - 1 >= 0:
+            if chk[q[0][0] - 1][q[0][1]] == -1 or chk[q[0][0] - 1][q[0][1]] > q[0][2] + 1:
+                chk[q[0][0] - 1][q[0][1]] = q[0][2] + 1
+                q.append([q[0][0] - 1, q[0][1], q[0][2] + 1])
+        q.popleft()
+    ans = 9999999999999999999
+    for i in range(2000):
+        if chk[S][i] != -1 and chk[S][i] <= ans:
+            ans = chk[S][i]
+    print(ans)
 
 
 if __name__ == "__main__":
