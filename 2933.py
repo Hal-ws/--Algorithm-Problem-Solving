@@ -32,8 +32,11 @@ def throwing(cave, height, direction, R, C): #i 가 짝수: 왼쪽에서 오른�
                 break
     ## 부수는 작업 끝. 부숴진것 때문에 두개로 갈라졌는지 확인.
     bfs(cave, R, C) #바닥에 붙어있는 클러스터 / 떨어져있는 클러스터로 구분
-def bfs(cave):
-    for i in
+
+
+def bfs(cave, R, C):
+    chk = [[0 for i in range(C)] for j in range(R)]
+
     return 0
 
 
