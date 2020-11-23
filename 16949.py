@@ -12,6 +12,8 @@ def main():
     bfs(diso, board, [0, 0], N, M)
     bfs(dise, board, [N - 1, M - 1], N, M)
     ans = 100000000
+    if diso[N - 1][M - 1] != 0:
+        ans = diso[N - 1][M - 1]
     for i in range(N):
         for j in range(M):
             if board[i][j]:
