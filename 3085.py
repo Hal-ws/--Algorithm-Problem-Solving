@@ -87,12 +87,12 @@ def garolen(board, maxLen, i, idx, N, candy, lenIdx):
     if board[idx][i + 1] != candy:  # 더 연속되지 않고 끊김.
         if maxLen[lenIdx][0] < maxLen[lenIdx][1]:
             maxLen[lenIdx][0] = maxLen[lenIdx][1]
-            maxLen[lenIdx][1] = 0
+        maxLen[lenIdx][1] = 0
     if i + 1 == N - 1 and board[idx][i + 1] == candy:  # 마지막까지 연결됨
         maxLen[lenIdx][1] += 1
         if maxLen[lenIdx][0] < maxLen[lenIdx][1]:
             maxLen[lenIdx][0] = maxLen[lenIdx][1]
-            maxLen[lenIdx][1] = 0
+        maxLen[lenIdx][1] = 0
 
 
 def serolen(board, maxLen, i, idx, N, candy, lenIdx):
@@ -100,12 +100,13 @@ def serolen(board, maxLen, i, idx, N, candy, lenIdx):
     if board[i + 1][idx] != candy: #더 연속되지 않고 끊김.
         if maxLen[lenIdx][0] < maxLen[lenIdx][1]:
             maxLen[lenIdx][0] = maxLen[lenIdx][1]
-            maxLen[lenIdx][1] = 0
+        maxLen[lenIdx][1] = 0
     if i + 1 == N - 1 and board[i + 1][idx] == candy: #마지막까지 연결됨
         maxLen[lenIdx][1] += 1
         if maxLen[lenIdx][0] < maxLen[lenIdx][1]:
             maxLen[lenIdx][0] = maxLen[lenIdx][1]
-            maxLen[lenIdx][1] = 0
+        maxLen[lenIdx][1] = 0
+
 
 if __name__ == "__main__":
     main()
