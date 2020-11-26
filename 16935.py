@@ -54,7 +54,7 @@ def cwrotation(board, N, M): #3번
     newboard = [[0 for i in range(N)] for j in range(M)]
     luy, lux = 0, 0
     rdy, rdx = N - 1, M - 1
-    while luy < rdy:
+    while luy < rdy and lux < rdx:
         q = deque()
         for j in range(lux, rdx + 1):
             q.append(board[luy][j])
