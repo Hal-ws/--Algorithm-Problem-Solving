@@ -11,10 +11,18 @@ def main():
         button[broken[i]] = 0
     ans1 = abs(N - 100)
     ans2= 500000
+    minDis = 1000000
     for i in range(1000001):
-        tmp = getnear(i, button) + abs(N - i)
-        if tmp <= ans2:
-            ans2 = tmp
+        tmp = getnear(i, button)
+        if tmp != None:
+            dis = + abs(N - i)
+            tmp = tmp + dis
+            if tmp <= ans2:
+                ans2 = tmp
+            if dis <= minDis: #거리가 멀어지면 제일 가까운 값이 아니기 때문에 break 해준다
+                minDis = dis 
+            else:
+                break
     print(min(ans1, ans2))
 
 
@@ -35,7 +43,7 @@ def getnear(N, button):
     if flag:
         return cnt
     else:
-        return 500000
+        return None
 
 
 if __name__ == '__main__':
