@@ -2,101 +2,147 @@ import sys
 
 
 def main():
-    global N
+    global N, cnt1, cnt2, cnt3, word1, word2, word3
+    cnt1, cnt2, cnt3 = 0, 0, 0
+    word1, word2, word3 = '', '', ''
     N = int(sys.stdin.readline())
-    tree = [[None, None, None] for i in range(26)] #부모, left, right 배치
+    tree = [[None, None, None] for i in range(N)]
     for i in range(N):
         parent, left, right = map(str, sys.stdin.readline().split())
         parent, left, right = ord(parent) - 65, ord(left) - 65, ord(right) - 65
-        if 0 <= left:
+        if left >= 0:
             tree[parent][1] = left
             tree[left][0] = parent
-        if 0 <= right:
+        if right >= 0:
             tree[parent][2] = right
             tree[right][0] = parent
-    root = findroot(tree, N)
-    pre(tree, root, [''] * N, root, [0], [0] * 26)
-    #mid(tree, root, [''] * N, root, [0], [0] * 26)
-    #post(tree, root, [''] * N, root, [0], [0] * 26)
-
-
-def findroot(tree, N):
-    for i in range(N):
-        if tree[i] != [None, None, None] and tree[i][0] == None:
-            return i
-
-
-def pre(tree, root, word, node, cnt, visit): # node: 현재 node
-    global N
-    if cnt[0] == 0: #첫시작
-        visit[root] = 1
-        word[cnt[0]] = chr(root + 65)
-        cnt = [1]
-    if cnt[0] == N: #순회 완료
+    if cnt1 == 0:  # 루트에서 시작이므로 루트 찾음
         for i in range(N):
-            print(word[i], end='')
-        return
-    left, right = tree[node][1], tree[node][2]
-    if left != None and visit[left] == 0: #왼쪽으로 갈수있고 이미 방문한 node가 아니면
-        visit[left] = 1
-        word[cnt[0]] = chr(left + 65)
-        cnt[0] += 1
-        pre(tree, root, word, left, cnt, visit)
-    if right != None and visit[right] == 0:
-        visit[right] = 1
-        word[cnt[0]] = chr(right + 65)
-        cnt[0] += 1
-        pre(tree, root, word, right, cnt, visit)
-    if left == None and right == None: # 밑에 아무것도 없으니 부모node로 돌아간다
-        node = tree[node][0]
-        pre(tree, root, word, node, cnt, visit)
+            if tree[i] != [None, None, None] and tree[i][0] == None:
+                root = i  # i번 node가 root임
+                break
+    print(pre(root, tree, [0] * 26))
+    print(mid(root, tree, [0] * 26))
+    print(post(root, tree, [0] * 26))
 
 
-def mid(tree, root, word, node, cnt, visit):
-    global N
-    if cnt == [0]: #시작할때
-        node = root #맨 왼쪽 점을 node로 시작
-        while tree[node][1] != None:
-            node = tree[node][1] # 계속 왼쪽밑으로감
-        word[cnt[0]] = chr(node + 65)
-        visit[node] = 1
-        cnt[0] += 1
-    if cnt[0] == N:
-        for i in range(N):
-            print(word[i], end='')
-        return
+def pre(node, tree, added):
+    global N, word1, cnt1
+    if cnt1 == 0:
+        word1 += chr(node + 65)
+        added[node] = 1
+        cnt1 += 1
+    if cnt1 == N:
+        return word1
     parent, left, right = tree[node][0], tree[node][1], tree[node][2]
-    if left == None and right == None: #밑에 아무것도 없어서 word에 추가함
-        word[cnt[0]] = chr(node + 65)
-        cnt[0] += 1
-        visit[node] = 1
-        mid(tree, root, word, parent, cnt)
-    if left != None and visit[left] == 1 and visit[node] == 0: #왼쪽에 있는건 다 방문해서 word에 추가함 
-        word[cnt[0]] = chr(left + 65)
-        cnt[0] += 1
-        visit[node] = 1
-        if right != None and visit[right] == 0: #오른쪽으로 가는것 가능
-            mid(tree, root, word, node, cnt, visit)
-        if parent != None:
-            mid(tree, root, word, node, cnt, visit)
-    if right != None and visit[right] == 1 and visit[node] == 0:
-        word[cnt[0]] = chr(left + 65)
-        cnt[0] += 1
-        visit[node] = 1
-            
-        
-        
+    if left != None:
+        if added[left] == 0: #왼쪽에 방문할게 남아있음
+            word1 += chr(left + 65)
+            added[left] = 1
+            cnt1 += 1
+            return pre(left, tree, added)
+        else:
+            if right == None: #왼쪽 방문 끝, 오른쪽은 방문할거 없음. 부모 노드로 돌아감
+                return pre(parent, tree, added)
+            if right != None:
+                if added[right] == 0: #오른쪽은 아직 추가 안됨
+                    word1 += chr(right + 65)
+                    added[right] = 1
+                    cnt1 += 1
+                    return pre(right, tree, added)
+                else: #오른쪽 노드들도 다 추가 끝남
+                    return pre(parent, tree, added)
+    else: #왼쪽 node는 없음
+        if right == None: # 끝 노드에 도착
+            return pre(parent, tree, added)
+        else: #오른쪽에 갈 node 있음
+            if added[right] == 0:
+                word1 += chr(right + 65)
+                added[right] = 1
+                cnt1 += 1
+                return pre(right, tree, added)
+            else:
+                return pre(parent, tree, added)
 
 
+def mid(node, tree, added):
+    global N, word2, cnt2
+    if cnt2 == N:
+        return word2
+    parent, left, right = tree[node][0], tree[node][1], tree[node][2]
+    if left != None:
+        if added[left] == 0: #왼쪽노드는 word에 안더해짐
+            return mid(left, tree, added)
+        else: #왼쪽노드는 word에 이미 더해짐
+            if added[node] == 0:
+                word2 += chr(node + 65)
+                added[node] = 1
+                cnt2 += 1
+            if right == None:#오른쪽에 방문할 node가 없으면 부모노드로 돌아감
+                return mid(parent, tree, added)
+            else:
+                if added[right] == 0:
+                    return mid(right, tree, added)
+                else:
+                    return mid(parent, tree, added)
+    else: #왼쪽에 방문할 node 없음
+        if added[node] == 0:
+            word2 += chr(node + 65)
+            added[node] = 1
+            cnt2 += 1
+        if right == None:
+            if added[node] == 0:
+                word2 += chr(node + 65)
+                added[node] = 1
+                cnt2 += 1
+            return mid(parent, tree, added)
+        else:
+            if added[right] == 0:
+                return mid(right, tree, added)
+            else:
+                return mid(parent, tree, added)
 
 
-
-
-
-
-def post(tree, root, word, node, cnt, visit):
-    global N
-    return 0
+def post(node, tree, added):
+    global N, word3, cnt3
+    if cnt3 == N:
+        return word3
+    parent, left, right = tree[node][0], tree[node][1], tree[node][2]
+    if left != None:
+        if added[left] == 0: #왼쪽에 추가가능한거 있음
+            return post(left, tree, added)
+        else:
+            if right == None: #왼쪽 노드는 word에 추가 완료, 오른쪽 노드는 없음. 현재 node word에 추가하고 parent로 이동
+                if added[node] == 0:
+                    word3 += chr(node + 65)
+                    added[node] = 1
+                    cnt3 += 1
+                return post(parent, tree, added)
+            else:
+                if added[right] == 1:
+                    if added[node] == 0:
+                        word3 += chr(node + 65)
+                        added[node] = 1
+                        cnt3 += 1
+                    return post(parent, tree, added)
+                else:
+                    return post(right, tree, added)
+    else:
+        if right == None:
+            if added[node] == 0:
+                word3 += chr(node + 65)
+                added[node] = 1
+                cnt3 += 1
+            return post(parent, tree, added)
+        else:
+            if added[right] == 1:
+                if added[node] == 0:
+                    word3 += chr(node + 65)
+                    added[node] = 1
+                    cnt3 += 1
+                return post(parent, tree, added)
+            else:
+                return post(right, tree, added)
 
 
 if __name__ == '__main__':
