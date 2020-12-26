@@ -1,153 +1,151 @@
+from collections import deque
 import sys
 
 
 def main():
+    global N, M, board
     N, M = map(int, sys.stdin.readline().split())
     board = []
+    q = deque()
     for i in range(N):
         board.append(list(sys.stdin.readline()[:M]))
-    pos = getballpos(board, N, M)
-    red, blue, hole = pos[0], pos[1], pos[2]
-    print(bruteforce(board, red, blue, hole))
-
-
-def getballpos(board, N, M):
-    pos = [None, None, None]
     for i in range(N):
         for j in range(M):
             if board[i][j] == "R":
-                pos[0] = [i, j]
+                red = [i, j]
+                board[i][j] = '.'
             if board[i][j] == "B":
-                pos[1] = [i, j]
-            if board[i][j] == "O":
-                pos[2] = [i, j]
-    return pos
+                blue = [i, j]
+                board[i][j] = '.'
+    state = [red, blue, 0, -1] #redball, blueball, cnt, 시작방향 (-1은 시작)
+    q.append(state)
+    ans = -1
+    while len(q) > 0:
+        r, b, cnt, dir = q[0][0], q[0][1], q[0][2], q[0][3] #ball이 사라지면 none을오 표시
+        if r == None and b != None:
+            ans = cnt
+            break
+        if r != None and b != None: #두 공이 다 있을때 다음 횟수 고려
+            ry, rx, by, bx = r[0], r[1], b[0], b[1]
+            if cnt <= 9: #10번 미만으롱 움직인 상태만 추가한다
+                if dir != 2: #상으로 갈 수 있을 때
+                    if ry <= by:
+                        nr = up(r, b)
+                        nb = up(b, nr)
+                    else:
+                        nb = up(b, r)
+                        nr = up(r, nb)
+                    q.append([nr, nb, cnt + 1, 0])
+                if dir != 3: #오른쪽으로 이동가능
+                    if bx <= rx: #rball이 더 오른쪽
+                        nr = right(r, b)
+                        nb = right(b, nr)
+                    else:
+                        nb = right(b, r)
+                        nr = right(r, nb)
+                    q.append([nr, nb, cnt + 1, 1])
+                if dir != 0: #아래로 이동
+                    if by <= ry: #red 먼저 움직임
+                        nr = down(r, b)
+                        nb = down(b, nr)
+                    else:
+                        nb = down(b, r)
+                        nr = down(r, nb)
+                    q.append([nr, nb, cnt + 1, 2])
+                if dir != 1: #왼쪽으로 이동
+                    if rx <= bx:
+                        nr = left(r, b)
+                        nb = left(b, nr)
+                    else:
+                        nb = left(b, r)
+                        nr = left(r, nb)
+                    q.append([nr, nb, cnt + 1, 3])
+        q.popleft()
+    if ans != -1:
+        print(1)
+    else:
+        print(0)
 
 
-def bruteforce(board, red, blue, hole):
-    directions = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1]
-    for i in range(4 ** 10):
-        directions[9] += 1
-        for j in range(10):
-            if directions[9 - j] == 4:
-                directions[9 - j] = 0
-                directions[9 - j - 1] += 1
-        if move(board, red, blue, hole, directions):
-            return 1  ## 하다가 중간에 되는거 있으면 stop.
-    return 0  ## 다 해봤는데 안되면 0 return
+def up(mv, stay):
+    global N, M, board
+    x = mv[1]
+    for y in range(mv[0] - 1, -1, -1):
+        if stay != None:
+            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
+                ny = y + 1
+                nxt = [ny, x]
+                break
+        else:
+            if board[y][x] == "#": #다른 볼과 겹칠 때
+                ny = y + 1
+                nxt = [ny, x]
+                break
+        if board[y][x] == 'O': #구멍 만남
+            nxt = None
+            break
+    return nxt
 
 
-def move(board, red, blue, hole, directions):  ## 중간에 파란볼 들어가면 0 return, 빨간볼 들어가면 1 return
-    for i in range(10):
-        if directions[i] == 0:  ## 상
-            if red[0] < blue[0]:
-                while board[red[0] - 1][red[1]] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[0] -= 1
-                    board[red[0]][red[1]] = 'R'
-                while board[blue[0] - 1][blue[1]] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[0] -= 1
-                    board[blue[0]][blue[1]] = 'B'
-                if board[red[0] - 1][red[1]] == 'O':
-                    return 1
-                if board[blue[0] - 1][blue[1]] == 'O':
-                    return 0
-            else:
-                while board[blue[0] - 1][blue[1]] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[0] -= 1
-                    board[blue[0]][blue[1]] = 'B'
-                while board[red[0] - 1][red[1]] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[0] -= 1
-                    board[red[0]][red[1]] = 'R'
-                if board[blue[0] - 1][blue[1]] == 'O':
-                    return 0
-                if board[red[0] - 1][red[1]] == 'O':
-                    return 1
-        if directions[i] == 1:  ## 하
-            if red[0] > blue[0]:
-                while board[red[0] + 1][red[1]] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[0] += 1
-                    board[red[0]][red[1]] = 'R'
-                while board[blue[0] + 1][blue[1]] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[0] += 1
-                    board[blue[0]][blue[1]] = 'B'
-                if board[red[0] + 1][red[1]] == 'O':
-                    return 1
-                if board[blue[0] + 1][blue[1]] == 'O':
-                    return 0
-            else:
-                while board[blue[0] + 1][blue[1]] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[0] += 1
-                    board[blue[0]][blue[1]] = 'B'
-                while board[red[0] + 1][red[1]] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[0] += 1
-                    board[red[0]][red[1]] = 'R'
-                if board[blue[0] + 1][blue[1]] == 'O':
-                    return 0
-                if board[red[0] + 1][red[1]] == 'O':
-                    return 1
-        if directions[i] == 2:  ## 좌
-            if red[1] < blue[1]:
-                while board[red[0]][red[1] - 1] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[1] -= 1
-                    board[red[0]][red[1]] = 'R'
-                while board[blue[0]][blue[1] - 1] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[1] -= 1
-                    board[blue[0]][blue[1]] = 'B'
-                if board[red[0]][red[1] - 1] == 'O':
-                    return 1
-                if board[blue[0]][blue[1] - 1] == 'O':
-                    return 0
-            else:
-                while board[blue[0]][blue[1] - 1] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[1] -= 1
-                    board[blue[0]][blue[1]] = 'B'
-                while board[red[0]][red[1] - 1] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[1] -= 1
-                    board[red[0]][red[1]] = 'R'
-                if board[blue[0]][blue[1] - 1] == 'O':
-                    return 0
-                if board[red[0]][red[1] - 1] == 'O':
-                    return 1
-        if directions[i] == 3:  ## 우
-            if red[1] < blue[1]:
-                while board[blue[0]][blue[1] + 1] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[1] += 1
-                    board[blue[0]][blue[1]] = 'B'
-                while board[red[0]][red[1] + 1] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[1] += 1
-                    board[red[0]][red[1]] = 'R'
-                if board[blue[0]][blue[1] + 1] == 'O':
-                    return 0
-                if board[red[0]][red[1] + 1] == 'O':
-                    return 1
-            else:
-                while board[red[0]][red[1] - 1] == '.':
-                    board[red[0]][red[1]] = '.'
-                    red[1] += 1
-                    board[red[0]][red[1]] = 'R'
-                while board[blue[0]][blue[1] - 1] == '.':
-                    board[blue[0]][blue[1]] = '.'
-                    blue[1] += 1
-                    board[blue[0]][blue[1]] = 'B'
-                if board[red[0]][red[1] - 1] == 'O':
-                    return 1
-                if board[blue[0]][blue[1] - 1] == 'O':
-                    return 0
+def down(mv, stay):
+    global N, M, board
+    x = mv[1]
+    for y in range(mv[0] + 1, N):
+        if stay != None:
+            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
+                ny = y - 1
+                nxt = [ny, x]
+                break
+        else:
+            if board[y][x] == "#": #다른 볼과 겹칠 때
+                ny = y - 1
+                nxt = [ny, x]
+                break
+        if board[y][x] == 'O': #구멍 만남
+            nxt = None
+            break
+    return nxt
 
 
-if __name__ == "__main__":
+def right(mv, stay):
+    global N, M, board
+    y = mv[0]
+    for x in range(mv[1] + 1, M):
+        if stay != None:
+            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
+                nx = x - 1
+                nxt = [y, nx]
+                break
+        else:
+            if board[y][x] == "#": #다른 볼과 겹칠 때 or 벽에 부딪힐때
+                nx = x - 1
+                nxt = [y, nx]
+                break
+        if board[y][x] == 'O': #구멍 만남
+            nxt = None
+            break
+    return nxt
+
+
+def left(mv, stay):
+    global N, M, board
+    y = mv[0]
+    for x in range(mv[1] - 1, -1, -1):
+        if stay != None:
+            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
+                nx = x + 1
+                nxt = [y, nx]
+                break
+        else:
+            if board[y][x] == "#": #다른 볼과 겹칠 때
+                nx = x + 1
+                nxt = [y, nx]
+                break
+        if board[y][x] == 'O': #구멍 만남
+            nxt = None
+            break
+    return nxt
+
+
+if __name__ == '__main__':
     main()
