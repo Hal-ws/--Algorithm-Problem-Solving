@@ -23,12 +23,13 @@ def main():
         for i in range(1, 7):
             nxt = cur + i
             if nxt <= 100 and visit[nxt] == 0:
+                visit[nxt] = 1
                 if event[nxt] == 0:
                     q.append([nxt, mvCnt + 1])
-                    visit[nxt] = 1
                 else:
-                    q.append([event[nxt], mvCnt + 1])
-                    visit[event[nxt]] = 1
+                    if visit[event[nxt]] == 0:
+                        q.append([event[nxt], mvCnt + 1])
+                        visit[event[nxt]] = 1
         q.popleft()
     print(ans)
 
