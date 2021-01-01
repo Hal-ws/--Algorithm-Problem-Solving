@@ -1,5 +1,6 @@
 import sys
 from itertools import product
+from copy import deepcopy
 
 
 def main():
@@ -11,19 +12,16 @@ def main():
         board.append(list(map(int, sys.stdin.readline().split())))
     cases = list(product([0, 1, 2, 3], repeat = 5))
     for case in cases:
-        tmp = [[0 for j in range(N)] for i in range(N)]
-        for i in range(N):
-            for j in range(N):
-                tmp[i][j] = board[i][j]
+        tmp = deepcopy(board)
         for i in range(5):
             if case[i] == 0:
-                up(tmp)
+                updown(tmp, 0, 1)
             if case[i] == 1:
-                right(tmp)
+                leftright(tmp, N - 1, -1)
             if case[i] == 2:
-                down(tmp)
+                updown(tmp, N - 1, -1)
             if case[i] == 3:
-                left(tmp)
+                leftright(tmp, 0, 1)
         for i in range(N):
             for j in range(N):
                 if ans <= tmp[i][j]:
@@ -31,12 +29,16 @@ def main():
     print(ans)
 
 
-def up(tmp):
+def updown(tmp, stdIdx, factor):
     global N
     sumChk = [[0 for j in range(N)] for i in range(N)]
+    if factor == 1:
+        start, end = 1, N
+    else:
+        start, end = N - 2, -1
     for j in range(N):
-        mvIdx = 0
-        for i in range(1, N):
+        mvIdx = stdIdx
+        for i in range(start, end, factor):
             if tmp[i][j] != 0: #빈칸 아니면 움직임
                 if tmp[mvIdx][j] == 0: #비어있는 칸으로 움직임
                     tmp[mvIdx][j] = tmp[i][j]
@@ -48,51 +50,27 @@ def up(tmp):
                             tmp[mvIdx][j] = tmp[mvIdx][j] * 2
                             tmp[i][j] = 0
                         else: # 못합침
-                            tmp[mvIdx + 1][j] = tmp[i][j]
-                            if mvIdx + 1 != i: # 움직일수 있음
+                            tmp[mvIdx + factor][j] = tmp[i][j]
+                            if mvIdx + factor != i: # 움직일수 있음
                                 tmp[i][j] = 0
-                        mvIdx += 1
+                        mvIdx += factor
                     else: # 다름
-                        tmp[mvIdx + 1][j] = tmp[i][j]
-                        if mvIdx + 1 != i: # 움직일수 있음
+                        tmp[mvIdx + factor][j] = tmp[i][j]
+                        if mvIdx + factor != i: # 움직일수 있음
                             tmp[i][j] = 0
-                        mvIdx += 1
+                        mvIdx += factor
 
 
-def down(tmp):
+def leftright(tmp, stdIdx, factor):
     global N
     sumChk = [[0 for j in range(N)] for i in range(N)]
-    for j in range(N):
-        mvIdx = N - 1
-        for i in range(N - 2, -1, -1):
-            if tmp[i][j] != 0:
-                if tmp[mvIdx][j] == 0: #빈칸으로 움직임
-                    tmp[mvIdx][j] = tmp[i][j]
-                    tmp[i][j] = 0
-                else: # 빈칸 아닌데로 움직임
-                    if tmp[mvIdx][j] == tmp[i][j]: #같은 숫자 움직임
-                        if sumChk[mvIdx][j] == 0: #합쳐야함
-                            sumChk[mvIdx][j] = 1
-                            tmp[mvIdx][j] = tmp[mvIdx][j] * 2
-                            tmp[i][j] = 0
-                        else: # 못합침
-                            tmp[mvIdx - 1][j] = tmp[i][j]
-                            if mvIdx - 1 != i:
-                                tmp[i][j] = 0
-                        mvIdx -= 1
-                    else:
-                        tmp[mvIdx - 1][j] = tmp[i][j]
-                        if mvIdx - 1 != i:
-                            tmp[i][j] = 0
-                        mvIdx -= 1
-
-
-def right(tmp):
-    global N
-    sumChk = [[0 for j in range(N)] for i in range(N)]
+    if factor == -1: # right
+        start, end = N - 2, -1
+    else:
+        start, end = 1, N
     for i in range(N):
-        mvIdx = N - 1
-        for j in range(N - 2, -1, -1):
+        mvIdx = stdIdx
+        for j in range(start, end, factor):
             if tmp[i][j] != 0:
                 if tmp[i][mvIdx] == 0: #빈칸으로 움직임
                     tmp[i][mvIdx] = tmp[i][j]
@@ -104,44 +82,15 @@ def right(tmp):
                             tmp[i][mvIdx] = tmp[i][mvIdx] * 2
                             tmp[i][j] = 0
                         else:
-                            tmp[mvIdx - 1][j] = tmp[i][j]
-                            if mvIdx - 1 != i: #움직일수 있음
+                            tmp[mvIdx + factor][j] = tmp[i][j]
+                            if mvIdx + factor != i: #움직일수 있음
                                 tmp[i][j] = 0
-                        mvIdx -= 1
+                        mvIdx += factor
                     else:
-                        tmp[i][mvIdx - 1] = tmp[i][j]
-                        if mvIdx - 1 != j: #움직일수 있음
+                        tmp[i][mvIdx + factor] = tmp[i][j]
+                        if mvIdx + factor != j: #움직일수 있음
                             tmp[i][j] = 0
-                        mvIdx -= 1
-
-
-
-def left(tmp):
-    global N
-    sumChk = [[0 for j in range(N)] for i in range(N)]
-    for i in range(N):
-        mvIdx = 0
-        for j in range(1, N):
-            if tmp[i][j] != 0:
-                if tmp[i][mvIdx] == 0: #빈칸으로 움직임
-                    tmp[i][mvIdx] = tmp[i][j]
-                    tmp[i][j] = 0
-                else:
-                    if tmp[i][mvIdx] == tmp[i][j]:
-                        if sumChk[i][mvIdx] == 0: #합쳐야함
-                            sumChk[i][mvIdx] = 1
-                            tmp[i][mvIdx] = tmp[i][mvIdx] * 2
-                            tmp[i][j] = 0
-                        else:
-                            tmp[mvIdx + 1][j] = tmp[i][j]
-                            if mvIdx + 1 != i: #움직일수 있음
-                                tmp[i][j] = 0
-                        mvIdx += 1
-                    else:
-                        tmp[i][mvIdx + 1] = tmp[i][j]
-                        if mvIdx + 1 != j: #움직일수 있음
-                            tmp[i][j] = 0
-                        mvIdx += 1
+                        mvIdx += factor
 
 
 if __name__ == '__main__':
