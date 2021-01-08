@@ -3,25 +3,28 @@ from itertools import product
 
 
 def main():
-    global board, cover, paper, ans, area, totalArea
-    board, cover = [], []
+    global board, cover, paper, areaChk, ans, area, totalArea
+    cases = list(product([0, 1, 2, 3, 4, 5], repeat=5))
+    board, cover, possible = [], [], []
     ans, area, totalArea = 26, 0, 0
-    for i in range(10):
+    areaChk = [[[0, 0, 0, 0, 0] for j in range(10)] for i in range(10)]
+    for i in range(10): #board, cover 더하고 총 넓이 구함
         board.append(list(map(int, sys.stdin.readline().split())))
         cover.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    for i in range(10):
         for j in range(10):
             if board[i][j] == 1:
                 totalArea += 1
-    cases = list(product([0, 1, 2, 3, 4, 5], repeat=5))
-    possible = []
+    for i in range(10): #areaChk 완성
+        for j in range(10):
+            getarea([i, j])
     for paper in cases:
         cnt = sum(paper) #사용한 조각 수
         if paper[0] * 1 + paper[1] * 4 + paper[2] * 9 + paper[3] * 16 + paper[4] * 25 == totalArea:
             possible.append([cnt, list(paper)])
     possible.sort()
     for case in possible:
-        dfs(case[1], [0, 0], case[0], 4)
+        print('case[1]: %s' %case[1])
+        dfs(case[1], [0, 0], case[0], 0, 4)
         if ans != 26:
             break
     if ans == 26:
@@ -30,28 +33,86 @@ def main():
         print(ans)
 
 
-def dfs(paper, pos, cnt, sizeIdx):
-    global board, cover, ans
+def dfs(case, pos, cnt, same, kIdx):
+    global board, cover, ans, areaChk
     y, x = pos[0], pos[1]
-    print('paper: %s' %paper)
-    for i in range(10):
-        print(cover[i])
-    print('-------------------')
     if ans != 26:
         return
     if cover == board:
         ans = cnt
-    for i in range(y, 10 - sizeIdx):
-        if i == y:
-            for j in range(x, 10 - sizeIdx):
-                if board[i][j] == 1 and cover[i][j] == 0:
-                    possible = chkSize([i, j], sizeIdx + 1)  #sizeIdx 개만큼 공간 있는지 확인
-                    if possible[sizeIdx] and paper[sizeIdx] > 0:  # 붙일 공간이 있고, 붙일 종이조각이 남아있음
-                        paper[sizeIdx] -= 1
-                        covering([i, j], sizeIdx + 1, 1)
-                        dfs(paper, [i, j], cnt)
-                        paper[sizeIdx] += 1
-                        covering([i, j], sizeIdx + 1, 0)
+        return
+    print('kIdx, pos: %s, %s' %(kIdx, pos))
+    if case[kIdx] == 0:
+        if kIdx == 0:
+            covering([0, 0], 10, 0)
+            return
+        dfs(case, pos, cnt, 0, kIdx - 1)
+    else: #아직 kIdx째 색종이를 붙일게 남아있음
+        if same: #이전에 붙였던 색종이랑 같은 색종이를 붙일때
+            flag = 0
+            for i in range(y, 10 - kIdx):
+                for j in range(x, 10 - kIdx):
+                    if areaChk[i][j][kIdx]: #가능할때
+                        flag2 = 1
+                        for k in range(i, i + kIdx + 1):
+                            for l in range(j, j + kIdx + 1):
+                                if cover[k][l] == 1:
+                                    flag2 = 0
+                                    break
+                        if flag2:
+                            print('i, j: %s, %s' %(i, j))
+                            print('case: %s' %case)
+                            flag = 1 #가능한 곳을 찾았을때
+                            covering([i, j], kIdx + 1, 1)
+                            for i in range(10):
+                                print(cover[i])
+                            if paper[kIdx] >= 1:
+                                case[kIdx] -= 1
+                                dfs(case, [i, j], cnt, 1, kIdx)
+                                case[kIdx] += 1
+                            else:
+                                dfs(case, [i, j], cnt, 0, kIdx - 1)
+            if flag == 0:
+                covering([0, 0], 10, 0)
+                return # 못붙임. return
+        else: #다른 색종이를 붙일때
+            flag = 0
+            for i in range(10 - kIdx): #[0, 0]부터 끝까지 확인해본다
+                for j in range(10 - kIdx):
+                    if areaChk[i][j][kIdx]:  # 가능할때
+                        flag2 = 1
+                        for k in range(i, i + kIdx + 1):
+                            for l in range(j, j + kIdx + 1):
+                                if cover[k][l] == 1:
+                                    flag2 = 0
+                                    break
+                        if flag2:
+                            flag = 1  # 가능한 곳을 찾았을때
+                            covering([i, j], kIdx + 1, 1)
+                            if paper[kIdx] >= 1:
+                                dfs(case, [i, j], cnt, 1, kIdx)
+                            else:
+                                dfs(case, [i, j], cnt, 0, kIdx - 1)
+            if flag == 0:
+                covering([0, 0], 10, 0)
+                return  # 못붙임. return
+
+
+def getarea(pos):
+    global areaChk, board
+    y, x = pos[0], pos[1]
+    for k in range(1, 6):
+        flag = 1
+        for i in range(y, y + k):
+            for j in range(x, x + k):
+                if 10 <= i or 10 <= j:
+                    flag = 0
+                    break
+                if board[i][j] == 0:
+                    flag = 0
+                    break
+        if flag:
+            areaChk[y][x][k - 1] = 1
 
 
 def covering(pos, size, c):
@@ -62,21 +123,6 @@ def covering(pos, size, c):
         for j in range(size):
             cover[y + i][x + j] = c
             cnt += 1
-
-
-def chkSize(pos, size): #pos를 맨 왼쪽위로 한 종이조각의 크기
-    global board, cover
-    y, x = pos[0], pos[1]
-    flag = 1
-    for i in range(y, y + size):
-        for j in range(x, x + size):
-            if board[i][j] == 1:
-                flag = 0
-                break
-            if cover[i][j] == 1:
-                flag = 0
-                break
-    return flag
 
 
 if __name__ == '__main__':
