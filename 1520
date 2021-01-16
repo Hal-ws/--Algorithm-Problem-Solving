@@ -1,0 +1,50 @@
+import sys
+
+
+def main():
+    global board, N, M, dy, dx, dp
+    sys.setrecursionlimit(25000)
+    dy = [-1, 1, 0, 0]
+    dx = [0, 0, -1, 1]
+    board = []
+    N, M = map(int, sys.stdin.readline().split())
+    dp =[[-1 for j in range(M)] for i in range(N)]
+    for i in range(N):
+        board.append(list(map(int, sys.stdin.readline().split())))
+    dfs([0, 0])
+    print(dp[0][0])
+
+
+def dfs(pos):
+    global board, N, M, dy, dx, dp
+    y, x = pos[0], pos[1]
+    if dp[y][x] != -1: #기존에 방문한적 있음
+        return
+    h = board[y][x]
+    if y == N - 1 and x == M - 1:
+        dp[N - 1][M - 1] = 1
+        return 1
+    flag = 0
+    for i in range(4):
+        ny, nx = y + dy[i], x + dx[i]
+        if 0 <= ny < N and 0 <= nx < M:
+            if board[ny][nx] < h: # 낮은구간으로 이동
+                if dp[ny][nx] != -1: #기존에 방문한적 있음
+                    if dp[y][x] == -1:
+                        dp[y][x] = dp[ny][nx]
+                    else:
+                        dp[y][x] += dp[ny][nx]
+                else:
+                    dfs([ny, nx])
+                    if dp[y][x] == -1:
+                        dp[y][x] = dp[ny][nx]
+                    else:
+                        dp[y][x] += dp[ny][nx]
+                flag = 1
+    if flag == 0:
+        dp[y][x] = 0
+        return 0
+
+
+if __name__ == '__main__':
+    main()
