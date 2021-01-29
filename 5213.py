@@ -1,5 +1,5 @@
 import sys
-from queue import PriorityQueue
+from collections import deque
 
 
 def main():
@@ -29,7 +29,6 @@ def main():
             board[iIdx][jIdx * 2 + 2] = b
             tileNum[iIdx][jIdx * 2 + 1] = k + 1
             tileNum[iIdx][jIdx * 2 + 2] = k + 1
-
     bfs()
 
 
@@ -40,18 +39,13 @@ def bfs():
     maxTile = 1 #도착한 타일중 가장 큰 타일
     maxLen = 0 #가장 큰 타일에 도착했을때 길이
     nearPath = ''
-    q = PriorityQueue()
+    q = deque()
+    visit[0][1] = 1
     visit[0][0] = 1
-    q.put([1, '1', 0, 0]) # 지나간 칸수, path, y, x
-    while q.empty() != True:
-        tmp = q.get()
+    q.append([1, '1', 0, 1]) # 지나간 칸수, path, y, x
+    while len(q) > 0:
+        tmp = q[0]
         cnt, path, y, x = tmp[0], tmp[1], tmp[2], tmp[3]
-        print('cnt: %s' %cnt)
-        print('y, x: %s, %s' %(y, x))
-        print('path: %s' %path)
-        if visit[8][13] == 1:
-            print(path)
-            return
         if N % 2 == 1: #홀수일때
             if y == N - 1:
                 if x == 2 * N - 1 or x == 2 * N - 2:
@@ -64,39 +58,23 @@ def bfs():
                     print(cnt)
                     print(path)
                     return
-        if visit[8][13] == 1:
-            print(path)
-            return
         for i in range(4):
             ny, nx = y + dy[i], x + dx[i]
             if 0 <= ny < N and 0 <= nx < 2 * N and visit[ny][nx] == 0:
-                if y == 8 and x == 12:
-                    print('visit[8][13]: %s' %visit[8][13])
-                    print('ny, nx: %s, %s' %(ny, nx))
-                    print('visit[ny][nx]: %s' %(visit[ny][nx]))
-                if tileNum[y][x] == tileNum[ny][nx]:
+                if tileNum[y][x] != tileNum[ny][nx] and board[y][x] == board[ny][nx]: #다른 타일&같은숫자일때 이동
                     visit[ny][nx] = 1
-                    q.put([cnt, path, ny, nx])
-                    if tileNum[y][x] == 803:
-                        print('같은 타일 내 이동')
-                        print('y, x: %s, %s' %(y, x))
-                        print('ny, nx, cnt: %s, %s, %s' %(ny, nx, cnt))
-                        print('path: %s' %path)
-                        print('tileNum[ny][nx]: %s' %tileNum[ny][nx])
-                else:
-                    if board[y][x] == board[ny][nx]:
-                        visit[ny][nx] = 1
-                        q.put([cnt + 1, path + ' ' + str(tileNum[ny][nx]), ny, nx])
-                        if tileNum[y][x] == 803:
-                            print('다른 타일로 이동')
-                            print('y, x: %s, %s' %(y, x))
-                            print('ny, nx, cnt: %s, %s, %s' % (ny, nx, cnt))
-                            print('path: %s' % path)
-                            print('tileNum[ny][nx]: %s' %tileNum[ny][nx])
-                        if tileNum[ny][nx] > maxTile:
-                            maxTile = tileNum[ny][nx]
-                            maxLen = cnt + 1
-                            nearPath = path + ' ' + str(tileNum[ny][nx])
+                    q.append([cnt + 1, path + ' ' + str(tileNum[ny][nx]), ny, nx])
+                    if 0 < nx and tileNum[ny][nx - 1] == tileNum[ny][nx] and visit[ny][nx - 1] == 0: # 붙어있는 타일도 이동시킨다
+                        q.append([cnt + 1, path + ' ' + str(tileNum[ny][nx]), ny, nx - 1])
+                        visit[ny][nx - 1] = 1
+                    if nx < 2 * N - 1 and tileNum[ny][nx + 1] == tileNum[ny][nx] and visit[ny][nx + 1] == 0:
+                        q.append([cnt + 1, path + ' ' + str(tileNum[ny][nx]), ny, nx + 1])
+                        visit[ny][nx + 1] = 1
+                    if maxTile < tileNum[ny][nx]:
+                        maxTile = tileNum[ny][nx]
+                        maxLen = cnt + 1
+                        nearPath = path + ' ' + str(tileNum[ny][nx])
+        q.popleft()
     print(maxLen)
     print(nearPath)
     return
