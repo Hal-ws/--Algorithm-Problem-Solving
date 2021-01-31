@@ -47,6 +47,8 @@ def throwing(cave, height, direction, R, C): #i 가 짝수: 왼쪽에서 오른�
                 break
         if endflag:
             break
+    for i in range(R):
+        print(chk[i])
     ## 이제 seperated cluster를 떨어트림
     boundary = []
     for i in range(C):
