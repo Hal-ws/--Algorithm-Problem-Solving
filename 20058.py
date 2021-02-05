@@ -12,7 +12,6 @@ def main():
         board.append(list(map(int, sys.stdin.readline().split())))
     spells = list(map(int, sys.stdin.readline().split()))
     for L in spells:
-        print('L: %s' %L)
         firestorm(L)
     iceCnt = 0
     maxVol = 0
@@ -33,9 +32,6 @@ def firestorm(L):
     for i in range(0, pow(2, N), pow(2, L)):
         for j in range(0, pow(2, N), pow(2, L)):
             rotation([i, j], L)
-    print('after rotate')
-    for i in range(pow(2, N)):
-        print(board[i])
     meltChk = [[0 for j in range(pow(2, N))] for i in range(pow(2, N))]
     for i in range(pow(2, N)):
         for j in range(pow(2, N)):
@@ -51,22 +47,18 @@ def firestorm(L):
         for j in range(pow(2, N)):
             if meltChk[i][j]:
                 board[i][j] -= 1
-    print('after melt')
-    for i in range(pow(2, N)):
-        print(board[i])
-    print('-----------------------')
 
 
 def rotation(pos, L): #좌상 좌표, 격자 구분
     global N, board
-    for layer in range(L):
+    for layer in range(pow(2, L) // 2):
         y, x = pos[0] + layer, pos[1] + layer
         q = deque()
+        length = pow(2, L) - 2 * layer
         lu = [y, x]
-        ld = [y + pow(2, L - layer) - 1, x]
-        ru = [y, x + pow(2, L - layer) - 1]
-        rd = [y + pow(2, L - layer) - 1, x + pow(2, L - layer) - 1]
-        print('y, x: %s, %s' %(y, x))
+        ld = [y + length - 1, x]
+        ru = [y, x + length - 1]
+        rd = [y + length - 1, x + length - 1]
         for j in range(lu[1], ru[1] + 1):
             q.append(board[lu[0]][j])
         for i in range(ru[0] + 1, rd[0] + 1):
@@ -75,10 +67,8 @@ def rotation(pos, L): #좌상 좌표, 격자 구분
             q.append(board[rd[0]][j])
         for i in range(ld[0] - 1, lu[0], - 1):
             q.append(board[i][ld[1]])
-        print('before q: %s' %q)
-        for cnt in range(pow(2, L - layer) - 1):
+        for cnt in range(length - 1):
             q.appendleft(q.pop())
-        print('after q: %s' %q)
         idx = 0
         for j in range(lu[1], ru[1] + 1):
             board[lu[0]][j] = q[idx]
