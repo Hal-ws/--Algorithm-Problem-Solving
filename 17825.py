@@ -6,7 +6,7 @@ def main():
     global board, visit
     board = [None] * 33
     board[0] = [0, 0, [1]]
-    visit = [[[[0 for j in range(33)] for i in range(33)] for k in range(33)] for l in range(33)]
+    visit = [[[[None for j in range(33)] for i in range(33)] for k in range(33)] for l in range(33)]
     for i in range(1, 21):
         board[i] = [0, 2 * i, [i + 1]]
         if i == 5 or i == 10 or i == 15:
@@ -34,7 +34,7 @@ def main():
 def bfs():
     global board, visit
     q = deque()
-    visit[0][0][0][0] = 1
+    visit[0][0][0][0] = None
     dice = list(map(int, sys.stdin.readline().split()))
     q.append([0, 0, 0, 0, 0, 0]) # 네 말 위치, 현재 굴려야하는 주사위 index, score
     ans = 0
@@ -54,14 +54,20 @@ def bfs():
                 if nxt not in horses:
                     nHorses = [horses[0], horses[1], horses[2], horses[3]]
                     nHorses[hIdx] = nxt
-                    if visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] == 0:
-                        visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = 1
+                    if visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] == None:
+                        visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = score + board[nxt][1]
+                        q.append(nHorses + [dIdx + 1, score + board[nxt][1]])
+                    elif score + board[nxt][1] > visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]]:
+                        visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = score + board[nxt][1]
                         q.append(nHorses + [dIdx + 1, score + board[nxt][1]])
             else: # 마지막 노드로 갈때
                 nHorses = [horses[0], horses[1], horses[2], horses[3]]
                 nHorses[hIdx] = nxt
-                if visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] == 0:
-                    visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = 1
+                if visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] == None:
+                    visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = score + board[nxt][1]
+                    q.append(nHorses + [dIdx + 1, score + board[nxt][1]])
+                elif score + board[nxt][1] >= visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]]:
+                    visit[nHorses[0]][nHorses[1]][nHorses[2]][nHorses[3]] = score + board[nxt][1]
                     q.append(nHorses + [dIdx + 1, score + board[nxt][1]])
         q.popleft()
     return ans
