@@ -26,10 +26,17 @@ def main():
         for j in range(i, m):
             numList.append(matrix2[i][j])
     numList.sort()
+    ansDic = {}
     l = len(numList)
     for i in range(n):
         for j in range(i, n):
-            ans += getans(matrix1[i][j])
+            tmp = matrix1[i][j]
+            if ansDic.get(tmp) == None:
+                tmpAns = getans(matrix1[i][j])
+                ansDic[tmp] = tmpAns
+                ans += tmpAns
+            else:
+                ans += ansDic[tmp]
     print(ans)
 
 
