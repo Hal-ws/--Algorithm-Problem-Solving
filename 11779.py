@@ -20,11 +20,6 @@ def daik(start, target):
     q = PriorityQueue()
     visit[start] = 0
     q.put([0, start, str(start)]) # 가격 합, 현재 위치, path
-    if start == target:
-        print(0)
-        print(1)
-        print(start)
-        return
     ansPath = None
     while q.empty() != True:
         tmp = q.get()
