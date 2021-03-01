@@ -27,13 +27,7 @@ def daik(start, target):
         for nxt in connect[curN]:
             nxtNode, tPrice = nxt[0], nxt[1] + curP
             nPath = curPath + ' ' + str(nxtNode)
-            if visit[nxtNode] == -1:
-                visit[nxtNode] = tPrice
-                if nxtNode == target: # target에 갈때
-                    ansPath = nPath
-                else:
-                    q.put([tPrice, nxtNode, nPath])
-            elif tPrice < visit[nxtNode]:
+            if visit[nxtNode] == -1 or tPrice < visit[nxtNode]:
                 visit[nxtNode] = tPrice
                 if nxtNode == target: # target에 갈때
                     ansPath = nPath
