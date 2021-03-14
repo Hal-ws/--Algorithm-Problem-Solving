@@ -3,11 +3,13 @@ from itertools import combinations
 
 
 def main():
-    global blocks, dy, dx
+    global blocks, dy, dx, ansFlag
     dy, dx = [-1, -1, -1, 0, 0, 0, 1, 1, 1], [-1, 0, 1, -1, 0, 1, -1, 0, 1]
     t = 1
     while 1:
         N = int(sys.stdin.readline())
+        vhChk = [[0 for j in range(9)] for i in range(9)]
+        ansFlag = 0
         if N == 0:
             break
         board = [[0 for j in range(9)] for i in range(9)]
@@ -26,31 +28,31 @@ def main():
             y, x = ord(iniVal[i][0]) - 65, int(iniVal[i][1]) - 1
             board[y][x] = i + 1
         eFlag = 0
+        print('Puzzle %s' %t)
         for i in range(9):
             for j in range(9):
                 if board[i][j] == 0:
-                    backtracking(i, j, chk, board)
+                    backtracking(i, j, chk, board, vhChk)
                     eFlag = 1
                     break
             if eFlag:
                 break
-        print('Puzzle %s' %t)
-        for i in range(9):
-            for j in range(9):
-                print(board[i][j], end='')
-            print()
         t += 1
 
 
-def backtracking(y, x, chk, board):
-    global blocks
+def backtracking(y, x, chk, board, vhChk):
+    global blocks, ansFlag
     if 8 < x: # 밖으로 나갔을 때 다음 줄로 넘겨줌
-        backtracking(y + 1, 0, chk, board)
-    if 8 < y: # 끝까지 다 돌았음
+        backtracking(y + 1, 0, chk, board, vhChk)
         return
-    print('y, x: %s, %s' %(y, x))
-    for i in range(9):
-        print(board[i])
+    if 8 < y: # 끝까지 다 돌았음
+        if ansFlag == 0:
+            for i in range(9):
+                for j in range(9):
+                    print(board[i][j], end='')
+                print()
+        ansFlag = 1
+        return
     if board[y][x] == 0: # 빈칸일 시에
         if y + 1 < 9 and board[y + 1][x] == 0: # 세로로 집어넣음
             for i in range(36):
@@ -59,13 +61,17 @@ def backtracking(y, x, chk, board):
                     if chkV(x, board) and chkH(y, board) and chkH(y + 1, board):
                         if chkS(y, x, board) and chkS(y + 1, x, board):
                             chk[i] = 1
-                            backtracking(y, x + 1, chk, board)
+                            vhChk[y][x], vhChk[y + 1][x] = 1, 1
+                            backtracking(y, x + 1, chk, board, vhChk)
+                            vhChk[y][x], vhChk[y + 1][x] = 0, 0
                             chk[i] = 0
                     board[y][x], board[y + 1][x] = blocks[i][1], blocks[i][0]
                     if chkV(x, board) and chkH(y, board) and chkH(y + 1, board):
                         if chkS(y, x, board) and chkS(y + 1, x, board):
                             chk[i] = 1
-                            backtracking(y, x + 1, chk, board)
+                            vhChk[y][x], vhChk[y + 1][x] = 1, 1
+                            backtracking(y, x + 1, chk, board, vhChk)
+                            vhChk[y][x], vhChk[y + 1][x] = 0, 0
                             chk[i] = 0
                     board[y][x], board[y + 1][x] = 0, 0
         if x + 1 < 9 and board[y][x + 1] == 0: #가로로 집어넣음
@@ -75,17 +81,21 @@ def backtracking(y, x, chk, board):
                     if chkV(x, board) and chkV(x + 1, board) and chkH(y, board):
                         if chkS(y, x, board) and chkS(y, x + 1, board):
                             chk[i] = 1
-                            backtracking(y, x + 1, chk, board)
+                            vhChk[y][x], vhChk[y][x + 1] = 2, 2
+                            backtracking(y, x + 1, chk, board, vhChk)
+                            vhChk[y][x], vhChk[y][x + 1] = 0, 0
                             chk[i] = 0
                     board[y][x], board[y][x + 1] = blocks[i][1], blocks[i][0]
                     if chkV(x, board) and chkV(x + 1, board) and chkH(y, board):
                         if chkS(y, x, board) and chkS(y, x + 1, board):
                             chk[i] = 1
-                            backtracking(y, x + 1, chk, board)
+                            vhChk[y][x], vhChk[y][x + 1] = 2, 2
+                            backtracking(y, x + 1, chk, board, vhChk)
+                            vhChk[y][x], vhChk[y][x + 1] = 0, 0
                             chk[i] = 0
                     board[y][x], board[y][x + 1] = 0, 0
     else: # 이미 차있는 칸. 다음 칸으로 넘김
-        backtracking(y, x + 1, chk, board)
+        backtracking(y, x + 1, chk, board, vhChk)
 
 
 def chkV(x, board):
