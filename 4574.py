@@ -51,7 +51,6 @@ def backtracking(y, x, chk, board):
     print('y, x: %s, %s' %(y, x))
     for i in range(9):
         print(board[i])
-    print('--------------')
     if board[y][x] == 0: # 빈칸일 시에
         if y + 1 < 9 and board[y + 1][x] == 0: # 세로로 집어넣음
             for i in range(36):
