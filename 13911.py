@@ -18,14 +18,14 @@ def main():
         connect[v - 1].append([u - 1, w])
     M, x = map(int, sys.stdin.readline().split())
     mac = list(map(int, sys.stdin.readline().split()))
+    S, y = map(int, sys.stdin.readline().split())
+    star = list(map(int, sys.stdin.readline().split()))
     for i in range(M):
         mac[i] -= 1
         macChk[mac[i]] = 1
     for i in range(M):
         if macChk[mac[i]] == 1:
             getDis(mac[i], 1)
-    S, y = map(int, sys.stdin.readline().split())
-    star = list(map(int, sys.stdin.readline().split()))
     for i in range(S):
         star[i] -= 1
         starChk[star[i]] = 1
@@ -33,8 +33,10 @@ def main():
         if starChk[star[i]] == 1:
             getDis(star[i], 0)
     for i in range(V):
-        if macDis[i] <= x and starDis[i] <= y and macDis[i] + starDis[i] < ans:
-            ans = macDis[i] + starDis[i]
+        mD, sD = macDis[i], starDis[i]
+        if mD <= x and sD <= y and mD + sD < ans:
+            if macChk[i] == 0 and starChk[i] == 0:
+                ans = mD + sD
     if ans == inf:
         print(-1)
     else:
