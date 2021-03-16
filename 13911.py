@@ -62,12 +62,22 @@ def getdis(pos):
                         macDis[nxtP] = tDis
                         q.put([tDis, nxtP, 0])
             else:
-                if chk[nxtP][0] == 1 and macDis[nxtP] != 0: # 맥도날드 방문
+                if chk[nxtP][0] == 1: # 맥도날드 방문
+                    if macDis[nxtP] != 0:
                         macDis[nxtP] = 0
                         q.put([0, nxtP, 0])
-                if chk[nxtP][1] == 1 and starDis[nxtP] != 0: # 스타벅스 방문
+                    if flag: # 스타벅스로부터의 거리 구하고 있을때
+                        if tDis < starDis[nxtP] and tDis <= y:
+                            starDis[nxtP] = tDis
+                            q.put([tDis, nxtP, 1])
+                if chk[nxtP][1] == 1: # 스타벅스 방문
+                    if starDis[nxtP] != 0:
                         starDis[nxtP] = 0
                         q.put([0, nxtP, 1])
+                    if flag == 0: # 맥도날드로부터 거리 구하고 있을 때
+                        if tDis < macDis[nxtP] and tDis <= x:
+                            macDis[nxtP] = tDis
+                            q.put([tDis, nxtP, 0])
 
 
 if __name__ == '__main__':
