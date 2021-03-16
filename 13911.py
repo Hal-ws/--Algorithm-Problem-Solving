@@ -1,41 +1,36 @@
 import sys
-from queue import PriorityQueue
 from math import inf
+from queue import PriorityQueue
 
 
 def main():
-    global connect, macDis, starDis, x, y, macChk, starChk
+    global connect, x, y, macDis, starDis, chk
     V, E = map(int, sys.stdin.readline().split())
+    connect = [[] for i in range(V + 1)]
+    chk = [[0, 0] for i in range(V + 1)]
+    macDis, starDis = [inf] * (V + 1), [inf] * (V + 1)
     ans = inf
-    connect = [[] for i in range(V)]
-    macDis = [inf] * V
-    macChk = [0] * V
-    starDis = [inf] * V
-    starChk = [0] * V
     for i in range(E):
         u, v, w = map(int, sys.stdin.readline().split())
-        connect[u - 1].append([v - 1, w])
-        connect[v - 1].append([u - 1, w])
+        connect[u].append([v, w])
+        connect[v].append([u, w])
     M, x = map(int, sys.stdin.readline().split())
-    mac = list(map(int, sys.stdin.readline().split()))
+    macPos = list(map(int, sys.stdin.readline().split()))
     S, y = map(int, sys.stdin.readline().split())
-    star = list(map(int, sys.stdin.readline().split()))
+    starPos = list(map(int, sys.stdin.readline().split()))
     for i in range(M):
-        mac[i] -= 1
-        macChk[mac[i]] = 1
-    for i in range(M):
-        if macChk[mac[i]] == 1:
-            getDis(mac[i], 1)
+        chk[macPos[i]][0] = 1
     for i in range(S):
-        star[i] -= 1
-        starChk[star[i]] = 1
-    for i in range(S):
-        if starChk[star[i]] == 1:
-            getDis(star[i], 0)
-    for i in range(V):
+        chk[starPos[i]][1] = 1
+    for i in range(1, V + 1):
+        if chk[i][0] == 1 and macDis[i] != 0:
+            getdis(i)
+        if chk[i][1] == 1 and starDis[i] != 0:
+            getdis(i)
+    for i in range(1, V + 1):
         mD, sD = macDis[i], starDis[i]
-        if mD <= x and sD <= y and mD + sD < ans:
-            if macChk[i] == 0 and starChk[i] == 0:
+        if mD != 0 and sD != 0: # 맥도날드도, 스타벅스도 아닌 장소
+            if mD <= x and sD <= y and mD + sD < ans:
                 ans = mD + sD
     if ans == inf:
         print(-1)
@@ -43,39 +38,36 @@ def main():
         print(ans)
 
 
-def getDis(pos, flag): # macdis인지, starDis인지 구별
-    global connect, macDis, starDis, x, y, macChk, starChk
+def getdis(pos):
+    global connect, x, y, macDis, starDis, chk
     q = PriorityQueue()
-    q.put([0, pos])
-    if flag:
+    if chk[pos][0] == 1:
         macDis[pos] = 0
-        macChk[pos] = 2
-    else:
+        q.put([0, pos, 0]) # 0 or 1: mac으로부터 거리, star로부터 거리
+    if chk[pos][1] == 1:
         starDis[pos] = 0
-        starChk[pos] = 2
+        q.put([0, pos, 1])
     while q.empty() != True:
         tmp = q.get()
-        dis, cur = tmp[0], tmp[1]
+        dis, cur, flag = tmp[0], tmp[1], tmp[2]
         for nxt in connect[cur]:
             nxtP, tDis = nxt[0], dis + nxt[1]
-            if flag: # 맥세권 찾는 프로세스
-                if macChk[nxtP] and macDis[nxtP] > 0: # 다음 위치가 아직 맥세권 계산 안한 맥도날드일때
-                    macDis[nxtP] = 0
-                    q.put([0, nxtP])
-                    macChk[nxtP] = 2
-                elif macChk[nxtP] == 0: #
-                    if tDis <= x and tDis < macDis[nxtP]: # 맥세권일때
-                        macDis[nxtP] = tDis
-                        q.put([tDis, nxtP])
-            else: # 스세권 찾는 프로세스
-                if starChk[nxtP] and starDis[nxtP] > 0: # 다음 위치가 아직 스세권 계산 안한 스타벅스일때
-                    starDis[nxtP] = 0
-                    q.put([0, nxtP])
-                    starChk[nxtP] = 2
-                elif starChk[nxtP] == 0:
-                    if tDis <= y and tDis < starDis[nxtP]:
+            if chk[nxtP][0] == 0 and chk[nxtP][1] == 0: # 일반 집 방문
+                if flag: # 스타벅스로부터 거리 구하고 있을때
+                    if tDis < starDis[nxtP] and tDis <= y:
                         starDis[nxtP] = tDis
-                        q.put([tDis, nxtP])
+                        q.put([tDis, nxtP, 1])
+                else: # 맥도날드로부터 거리 구하고 있을때
+                    if tDis < macDis[nxtP] and tDis <= x:
+                        macDis[nxtP] = tDis
+                        q.put([tDis, nxtP, 0])
+            else:
+                if chk[nxtP][0] == 1 and macDis[nxtP] != 0: # 맥도날드 방문
+                        macDis[nxtP] = 0
+                        q.put([0, nxtP, 0])
+                if chk[nxtP][1] == 1 and starDis[nxtP] != 0: # 스타벅스 방문
+                        starDis[nxtP] = 0
+                        q.put([0, nxtP, 1])
 
 
 if __name__ == '__main__':
