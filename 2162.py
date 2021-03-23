@@ -2,30 +2,23 @@ import sys
 
 
 def main():
+    global roots
     N = int(sys.stdin.readline())
-    x1, y1, x2, y2 = map(int, sys.stdin.readline().split())
-    lineList = [sorted([[x1, y1], [x2, y2]])]
-    setList = [0] * N # 몇번 그룹에 해당하는지 저장
-    setList[0] = 1
-    maxCnt = 1
-    for i in range(1, N):
+    lineList = []
+    roots = [i for i in range(N)]
+    for i in range(N):
         x1, y1, x2, y2 = map(int, sys.stdin.readline().split())
         lineList.append(sorted([[x1, y1], [x2, y2]]))
-        flag = 0 # 기존 그룹에 포함될수 있는지 확인
-        print('chk1')
-        for j in range(i):
-            print('chk2')
-            print('l1: %s' %lineList[j])
-            print('l2: %s' %lineList[i])
-            if crossChk(lineList[j], lineList[i]): # 겹침
-                flag = 1
-                setList[i] = setList[j]
-                break
-        if flag == 0:
-            setList[i] = maxCnt + 1
-            maxCnt += 1
-    print(setList)
-
+    for i in range(N):
+        for j in range(N):
+            if i != j: # 다른 선분일 때
+                if crossChk(lineList[i], lineList[j]): # 겹칠 때
+                    union(i, j)
+    ansList = [0 for i in range(N)]
+    for i in range(N):
+        ansList[find(roots[i])] += 1
+    print(N - ansList.count(0))
+    print(max(ansList))
 
 def crossChk(l1, l2):
     x1, y1, x2, y2 = l1[0][0], l1[0][1], l1[1][0], l1[1][1]
@@ -79,6 +72,21 @@ def crossChk(l1, l2):
             else:
                 ans = 0
     return ans
+
+
+def union(node1, node2):
+    global roots
+    root1, root2 = find(node1), find(node2)
+    if root1 != root2:
+        roots[root2] = root1
+
+
+def find(node):
+    global roots
+    if roots[node] == node:
+        return node
+    roots[node] = find(roots[node])
+    return roots[node]
 
 
 if __name__ == '__main__':
