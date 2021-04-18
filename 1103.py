@@ -2,7 +2,7 @@ import sys
 
 
 def main():
-    global N, M, result, dy, dx, board, loofFlag, visit
+    global N, M, result, dy, dx, board
     sys.setrecursionlimit(2501)
     N, M = map(int, sys.stdin.readline().split())
     board = []
@@ -15,12 +15,8 @@ def main():
     result = [[0 for j in range(M)] for i in range(N)]
     visit = [[0 for j in range(M)] for i in range(N)]
     ans = 0
-    loofFlag = 0
     visit[0][0] = 1
     getSol([0, 0], visit)
-    if loofFlag:
-        print(-1)
-        return
     for i in range(N):
         for j in range(M):
             if result[i][j] > ans:
@@ -29,14 +25,12 @@ def main():
 
 
 def getSol(pos, visit): # 시작 좌표, 지나온 좌표들
-    global N, M, result, dy, dx, board, loofFlag
+    global N, M, result, dy, dx, board
     y, x = pos[0], pos[1]
     if visit[y][x] == 2:
-        loofFlag = 1
-        return -1
+        print(-1)
+        sys.exit()
     maxVal = 0
-    if loofFlag:
-        return -1
     for i in range(4):
         ny, nx = y + (dy[i] * board[y][x]), x + (dx[i] * board[y][x])
         if 0 <= ny < N and 0 <= nx < M and board[ny][nx] != 'H':
