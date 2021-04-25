@@ -1,50 +1,41 @@
-from collections import deque
 import sys
+from collections import deque
 
 
 def main():
     M, N, H = map(int, sys.stdin.readline().split())
-    box = []
-    for k in range(H):
-        layer = []
-        for i in range(N):
-            layer.append(list(map(int, sys.stdin.readline().split())))
-        box.append(layer)
+    box = [[[0 for j in range(M)] for i in range(N)] for k in range(H)]
+    visit = [[[0 for j in range(M)] for i in range(N)] for k in range(H)]
+    dz = [-1, 0, 0, 0, 0, 1]
+    dy = [0, -1, 1, 0, 0, 0]
+    dx = [0, 0, 0, -1, 1, 0]
     q = deque()
-    visited = [[[0 for j in range(M)] for i in range(N)] for k in range(H)]
-    cnt = 0 # 안익은 토마토 셈
+    maxT = 0
+    for k in range(H):
+        for i in range(N):
+            tmp = list(map(int, sys.stdin.readline().split()))
+            for j in range(M):
+                box[k][i][j] = tmp[j]
+                if tmp[j] == 1:
+                    q.append([k, i, j, 0]) # 좌표, t
+    while len(q) > 0:
+        tmp = q.popleft()
+        z, y, x, t = tmp[0], tmp[1], tmp[2], tmp[3]
+        for i in range(6):
+            nz, ny, nx = z + dz[i], y + dy[i], x + dx[i]
+            if 0 <= nz < H and 0 <= ny < N and 0 <= nx < M and box[nz][ny][nx] == 0 and visit[nz][ny][nx] == 0:
+                visit[nz][ny][nx] = t + 1
+                q.append([nz, ny, nx, t + 1])
+                box[nz][ny][nx] = 1
     for k in range(H):
         for i in range(N):
             for j in range(M):
-                if box[k][i][j] == 1:
-                    q.append([k, i, j, 0])
-                    visited[k][i][j] = 1
-                if box[k][i][j] == 0:
-                    cnt += 1
-    if cnt == 0:
-        print(0)
-        return
-    dz = [-1, 1, 0, 0, 0, 0]
-    dy = [0, 0, -1, 1, 0, 0]
-    dx = [0, 0, 0, 0, -1, 1]
-
-    while 1:
-        curz, cury, curx, day = q[0][0], q[0][1], q[0][2], q[0][3]
-        for i in range(6):
-            nz, ny, nx = curz + dz[i], cury + dy[i], curx + dx[i]
-            if 0 <= nz < H and 0 <= ny < N and 0 <= nx < M:
-                if box[nz][ny][nx] == 0 and visited[nz][ny][nx] == 0:
-                    q.append([nz, ny, nx, day + 1])
-                    visited[nz][ny][nx] = 1
-                    cnt -= 1
-        q.popleft()
-        if len(q) == 0:
-            answer = day
-            break
-    if cnt == 0:
-        print(answer)
-    else:
-        print(-1)
+                if box[k][i][j] == 0: # 안익은거 남아있음
+                    print(-1)
+                    return
+                if box[k][i][j] and visit[k][i][j] > maxT:
+                    maxT = visit[k][i][j]
+    print(maxT)
 
 
 if __name__ == '__main__':
