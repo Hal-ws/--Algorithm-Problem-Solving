@@ -4,7 +4,7 @@ import sys
 def main():
     global board, dy, dx
     c = int(sys.stdin.readline())
-    dy, dx = [-1, -2, -1, 1, 2, 1], [1, 0, -1, -1, 0, 1]
+    dy, dx = [-2, -1, 1, 2, 1, -1], [0, -1, -1, 0, 1, 1]
     cntList = [0 ,1, 0, 0, 0, 0] # i번 자원이 사용된 횟수
     board = [[0 for j in range(163)] for i in range(325)]
     ansList = [0]
@@ -12,26 +12,18 @@ def main():
     ansList.append(1)
     maxLayer = 82
     for l in range(2, maxLayer):
-        print('%s layer start' %l)
-        y, x = 162 + (l - 1) * dy[0], 81 + (l - 1) * dx[0] # 시작 위치
+        y, x = 161 + (l - 2), 82 + (l - 2)
         board[y][x] = putNum(cntList, y, x)
-        print('nth: %s' %(len(ansList)))
-        print('y, x, board[y][x]: %s, %s, %s' %(y, x, board[y][x]))
         ansList.append(board[y][x])
-        y, x = y - 1, x - 1
-        for d in range(2, 8):
-            d = d % 6
-            print('d: %s' %d)
-            if d == 2:
+        for d in range(6):
+            if d == 0:
                 maxMv = l - 2
             else:
                 maxMv = l - 1
-            for mv in range(maxMv): # l - 1씩 움직임
-                board[y][x] = putNum(cntList, y, x)
-                print('nth: %s' %(len(ansList)))
-                print('y, x, board[y][x]: %s, %s, %s' %(y, x, board[y][x]))
-                ansList.append(board[y][x])
+            for i in range(maxMv):
                 y, x = y + dy[d], x + dx[d]
+                board[y][x] = putNum(cntList, y, x)
+                ansList.append(board[y][x])
     for i in range(c):
         n = int(sys.stdin.readline())
         print(ansList[n])
