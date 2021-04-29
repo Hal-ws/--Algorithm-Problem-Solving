@@ -59,28 +59,18 @@ def bfs(box):
 
 
 def rotation(layer, rCnt):
+    base = [[0 for j in range(5)] for i in range(5)]
+    for i in range(5):
+        for j in range(5):
+            base[i][j] = layer[i][j]
     newLayer = [[0 for j in range(5)] for i in range(5)]
-    for l in range(3):
-        q = deque()
-        for j in range(l, 5 - l):
-            q.append(layer[l][j])
-        for i in range(l + 1, 5 - l):
-            q.append(layer[i][5 - l - 1])
-        for j in range(5 - l - 2, -1 + l, -1):
-            q.append(layer[5 - l - 1][j])
-        for i in range(5 - l - 2, l, -1):
-            q.append(layer[i][l])
-        for _ in range(rCnt):
-            for i in range(5 - (l * 2) - 1):
-                q.append(q.popleft())
-        for j in range(l, 5 - l):
-            newLayer[l][j] = q.popleft()
-        for i in range(l + 1, 5 - l):
-            newLayer[i][5 - l - 1] = q.popleft()
-        for j in range(5 - l - 2, -1 + l, -1):
-            newLayer[5 - l - 1][j] = q.popleft()
-        for i in range(5 - l - 2, l, -1):
-            newLayer[i][l] = q.popleft()
+    for _ in range(rCnt):
+        for i in range(5):
+            for j in range(5):
+                newLayer[j][5 - i - 1] = base[i][j]
+        for i in range(5):
+            for j in range(5):
+                base[i][j] = newLayer[i][j]
     return newLayer
 
 
