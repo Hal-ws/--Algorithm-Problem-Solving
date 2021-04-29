@@ -1,5 +1,5 @@
 import sys
-from itertools import product
+from itertools import product, permutations
 from _collections import deque
 
 
@@ -18,22 +18,24 @@ def main():
     for i in range(5):
         for j in range(1, 5): # 1번, 2번
             layers[i].append(rotation(layers[i][0], j)) # i번째 layer의 0번 케이스(회전 안함)를 j번 회전시키고 저장한다
-    cases = product([0, 1, 2, 3], repeat=5)
-    for case in cases:
-        testBox = []
-        for i in range(5): # test용 박스 조립
-            useLayer = case[i]
-            testBox.append(layers[i][useLayer])
-        result = bfs(testBox)
-        if result < answer:
-            answer = result
+    suffles = list(permutations([0, 1, 2, 3, 4], 5))
+    cases = list(product([0, 1, 2, 3], repeat=5))
+    for suffle in suffles:
+        for case in cases:
+            testBox = []
+            for i in range(5): # test용 박스 조립
+                testBox.append(layers[suffle[i]][case[i]])
+            if testBox[4][0][0] == testBox[0][4][4] == 1:
+                result = bfs(testBox)
+                if result < answer:
+                    answer = result
+            if answer == 12:
+                print(12)
+                return
     if answer == 3126:
         print(-1)
     else:
         print(answer)
-
-
-
 
 
 def bfs(box):
@@ -44,17 +46,9 @@ def bfs(box):
         q.append([4, 0, 0, 0]) # z, y, x, cnt
         visit[4][0][0] = 1
     while len(q) > 0:
-        print('q: %s' %q)
         tmp = q.popleft()
         z, y, x, cnt = tmp[0], tmp[1], tmp[2], tmp[3]
-        if z == 0 and y == 4 and z == 4:
-            print('cnt: %s' %cnt)
-            for i in range(5):
-                print('layer %s' %i)
-                for j in range(5):
-                    print(box[i][j])
-            print('---------------------')
-
+        if z == 0 and y == 4 and x == 4:
             return cnt
         for i in range(6):
             nz, ny, nx = z + dz[i], y + dy[i], x + dx[i]
