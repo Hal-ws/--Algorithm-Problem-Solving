@@ -11,8 +11,8 @@ def main():
                     minIdx = j
             if minIdx != None:
                 word[i], word[minIdx] = word[minIdx], word[i]
-                word = word[:minIdx + 1]
                 tmpList = [word[j] for j in range(i + 1, len(word))]
+                word = word[:i + 1]
                 tmpList.sort()
                 word = word + tmpList
                 break
