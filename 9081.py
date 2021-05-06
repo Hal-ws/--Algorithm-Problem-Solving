@@ -11,10 +11,10 @@ def main():
                     minIdx = j
             if minIdx != None:
                 word[i], word[minIdx] = word[minIdx], word[i]
+                word = word[:minIdx + 1]
                 tmpList = [word[j] for j in range(i + 1, len(word))]
                 tmpList.sort()
-                for j in range(len(tmpList)):
-                    word[i + j + 1] = tmpList[j]
+                word = word + tmpList
                 break
         for i in range(len(word)):
             print(word[i], end='')
