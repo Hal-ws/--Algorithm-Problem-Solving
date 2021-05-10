@@ -45,14 +45,10 @@ def main():
                         break
                 else: # 파란색 또는 범위 밖인 경우
                     # 방향전환
-                    if d == 0:
-                        horses[hIdx][2] = 1
-                    if d == 1:
-                        horses[hIdx][2] = 0
-                    if d == 2:
-                        horses[hIdx][2] = 3
-                    if d == 3:
-                        horses[hIdx][2] = 2
+                    if d % 2 == 0:
+                        horses[hIdx][2] = d + 1
+                    else:
+                        horses[hIdx][2] = d - 1
                     d = horses[hIdx][2] # 전환된 방향 저장
                     ny, nx = y + dy[d], x + dx[d]
                     if 0 <= ny < N and 0 <= nx < N and colorBoard[ny][nx] != 2:
