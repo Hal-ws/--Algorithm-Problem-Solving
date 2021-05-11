@@ -14,38 +14,21 @@ def main():
     for i in range(92):
         for j in range(92):
             if board[i][j]:
-                for x in range(j, 101):
-                    if board[i][x]: #1일 경우
-                        w = x - j + 1
-                    else:
-                        break
-                minH = 101
-                for x in range(j, j + w + 1):
-                    for y in range(i, 101):
-                        if board[y][x]:
-                            h = y - i + 1
-                        else:
-                            break
-                    if h < minH:
-                        minH = h
-                size1 = minH * w
-                for y in range(i, 101):
-                    if board[y][j]:
-                        h = y - i + 1
-                    else:
-                        break
                 minW = 101
-                for y in range(i, i + h + 1):
+                for y in range(i, 101):
+                    curL = 0
                     for x in range(j, 101):
                         if board[y][x]:
-                            w = x - j + 1
+                            curL += 1
                         else:
                             break
-                    if w < minW:
-                        minW = w
-                size2 = h * minW
-                if ans < max(size1, size2):
-                    ans = max(size1, size2)
+                    if curL == 0:
+                        break
+                    if curL <= minW:
+                        minW = curL
+                    size = (y - i + 1) * minW
+                    if ans < size:
+                        ans = size
     print(ans)
 
 
