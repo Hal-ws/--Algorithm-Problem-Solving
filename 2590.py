@@ -13,7 +13,6 @@ def main():
         paperList[0] -= leftSpace
         if paperList[0] < 0:
             paperList[0] = 0
-    # 여기까진 ㄱㅊ
     if paperList[3] > 0: # 4 * 4 사이즈
         answer += paperList[3]
         leftSpace = 20 * paperList[3]
