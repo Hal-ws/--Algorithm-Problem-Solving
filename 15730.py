@@ -14,6 +14,9 @@ def main():
         if maxH <= max(tmp):
             maxH = max(tmp)
     board.append([0 for j in range(M + 2)])
+
+    for i in range(N + 2):
+        print(board[i])
     for stdH in range(maxH + 1):
         answer += bfs(stdH)
     print(answer)
@@ -40,7 +43,7 @@ def bfs(stdH):
                 visit[ny][nx] = 1
                 q.append([ny, nx])
     for i in range(N + 2):
-        for j in range(N + 2):
+        for j in range(M + 2):
             if visit[i][j] == 0:
                 cnt += 1
     return cnt
