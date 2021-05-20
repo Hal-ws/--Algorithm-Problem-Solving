@@ -1,50 +1,46 @@
 import sys
-from _collections import deque
+from collections import deque
 
 
 def main():
-    global N, M, hBoard, maxH
+    global N, M, board
     N, M = map(int, sys.stdin.readline().split())
-    hBoard = []
-    maxH = 0
-    answer = 0
+    board = [[0 for j in range(M + 2)]]
+    maxH, answer = 0, 0
     for i in range(N):
-        hBoard.append(list(map(int, sys.stdin.readline().split())))
-        tmpMaxH = max(hBoard[-1])
-        if maxH < tmpMaxH:
-            maxH = tmpMaxH
+        tmp = list(map(int, sys.stdin.readline().split()))
+        tmp = [0] + tmp + [0]
+        board.append(tmp)
+        if maxH <= max(tmp):
+            maxH = max(tmp)
+    board.append([0 for j in range(M + 2)])
     for stdH in range(maxH + 1):
-        answer += water(stdH)
+        answer += bfs(stdH)
     print(answer)
 
 
-def water(stdH):
-    global N, M, hBoard, maxH
-    visit = [[0 for j in range(M)] for i in range(N)]
-    dy = [-1, 1, 0, 0]
-    dx = [0, 0, -1, 1]
+def bfs(stdH):
+    global N, M, board
     cnt = 0
-    for i in range(N):
-        for j in range(M):
-            if hBoard[i][j] > stdH:
+    q = deque()
+    visit = [[0 for j in range(M + 2)] for i in range(N + 2)]
+    dy, dx = [-1, 1, 0, 0], [0, 0, -1, 1]
+    for i in range(N + 2):
+        for j in range(M + 2):
+            if board[i][j] > stdH:
                 visit[i][j] = 1
-    for i in range(N):
-        for j in range(M):
-            if i == 0 or i == N - 1 or j == 0 or j == M - 1:
-                if visit[i][j] == 0: # 물이 찰 수 있는 공간
-                    q = deque()
-                    visit[i][j] = 1
-                    q.append([i, j])
-                    while len(q) > 0:
-                        tmp = q.popleft()
-                        y, x = tmp[0], tmp[1]
-                        for k in range(4):
-                            ny, nx = y + dy[k], x + dx[k]
-                            if 0 <= ny < N and 0 <= nx < M and visit[ny][nx] == 0:
-                                visit[ny][nx] = 1
-                                q.append([ny, nx])
-    for i in range(N):
-        for j in range(M):
+    q.append([0, 0])
+    visit[0][0] = 1
+    while len(q) > 0:
+        tmp = q.popleft()
+        y, x = tmp[0], tmp[1]
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < N + 2 and 0 <= nx < M + 2 and visit[ny][nx] == 0:
+                visit[ny][nx] = 1
+                q.append([ny, nx])
+    for i in range(N + 2):
+        for j in range(N + 2):
             if visit[i][j] == 0:
                 cnt += 1
     return cnt
