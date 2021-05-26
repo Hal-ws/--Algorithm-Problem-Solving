@@ -41,7 +41,7 @@ def main():
                     maxSize = (i // 2) + 1
                 for size in range(2, maxSize + 1):
                     chkY = i - size + 1
-                    if j > chkY * 2:
+                    if j > chkY * 2 or j - 2 * (size - 1) < 1:
                         break
                     tmpVal += (sTriangle[i - size + 1][j] - sTriangle[i - size + 1][j - (size * 2 - 1)])
                 if tmpVal > ans:
