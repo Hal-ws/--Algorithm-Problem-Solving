@@ -24,16 +24,13 @@ def main():
         for i in range(layer):
             for j in range(0, 2 * i + 1, 2):
                 tmpVal = 0
-                print('i, j: %s, %s' %(i, j))
                 for size in range(1, layer - i + 1):
-                    print('size: %s' %size)
                     if j == 0:
                         tmpVal += sTriangle[i + size - 1][(size - 1) * 2]
                     else:
                         tmpVal += (sTriangle[i + size - 1][j + (size - 1) * 2] - sTriangle[i + size - 1][j - 1])
                     if tmpVal > ans:
                         ans = tmpVal
-                    print('tmpVal: %s' %tmpVal)
         # 역방향
         for i in range(layer -1, 2, -1): # i 가 3보다는 같거나 커야 역방향 삼각형이 있을 수 있음
             for j in range(3, 2 * i + 1, 2):
@@ -43,6 +40,9 @@ def main():
                 else:
                     maxSize = (i // 2) + 1
                 for size in range(2, maxSize + 1):
+                    chkY = i - size + 1
+                    if j > chkY * 2:
+                        break
                     tmpVal += (sTriangle[i - size + 1][j] - sTriangle[i - size + 1][j - (size * 2 - 1)])
                 if tmpVal > ans:
                     ans = tmpVal
