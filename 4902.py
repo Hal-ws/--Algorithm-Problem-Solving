@@ -1,4 +1,5 @@
 import sys
+from math import inf
 
 
 def main():
@@ -6,7 +7,7 @@ def main():
     while 1:
         tList = list(map(int, sys.stdin.readline().split()))
         layer = tList[0]
-        ans = -1 * (400 * 799 * 1000) - 1
+        ans = -1 * inf
         if layer == 0:
             break
         tList = tList[1:]
@@ -20,6 +21,8 @@ def main():
                     sTriangle[i][j - start] = tList[j]
                 else:
                     sTriangle[i][j - start] = tList[j] + sTriangle[i][j - start - 1]
+                if tList[j] > ans: # 사이즈가 1인것들 다 정리
+                    ans = tList[j]
         # 정방향
         for i in range(layer):
             for j in range(0, 2 * i + 1, 2):
@@ -44,8 +47,8 @@ def main():
                     if j > chkY * 2 or j - 2 * (size - 1) < 1:
                         break
                     tmpVal += (sTriangle[i - size + 1][j] - sTriangle[i - size + 1][j - (size * 2 - 1)])
-                if tmpVal > ans:
-                    ans = tmpVal
+                    if tmpVal > ans:
+                        ans = tmpVal
         print('%s. %s' %(t, ans))
         t += 1
 
