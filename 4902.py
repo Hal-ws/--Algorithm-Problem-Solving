@@ -32,8 +32,7 @@ def main():
                         tmpVal += sTriangle[i + size - 1][(size - 1) * 2]
                     else:
                         tmpVal += (sTriangle[i + size - 1][j + (size - 1) * 2] - sTriangle[i + size - 1][j - 1])
-                    if tmpVal > ans:
-                        ans = tmpVal
+                    ans = max(ans, tmpVal)
         # 역방향
         for i in range(layer -1, 2, -1): # i 가 3보다는 같거나 커야 역방향 삼각형이 있을 수 있음
             for j in range(3, 2 * i + 1, 2):
@@ -47,8 +46,7 @@ def main():
                     if j > chkY * 2 or j - 2 * (size - 1) < 1:
                         break
                     tmpVal += (sTriangle[i - size + 1][j] - sTriangle[i - size + 1][j - (size * 2 - 1)])
-                    if tmpVal > ans:
-                        ans = tmpVal
+                    ans = max(ans, tmpVal)
         print('%s. %s' %(t, ans))
         t += 1
 
