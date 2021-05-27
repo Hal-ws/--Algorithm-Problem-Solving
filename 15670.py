@@ -6,6 +6,7 @@ def main():
     sCnt = getCntList(road)
     road.reverse()
     rCnt = getCntList(road)
+    road.reverse()
     for _ in range(M):
         start, end = map(int, sys.stdin.readline().split())
         start, end = start - 1, end - 1
@@ -16,12 +17,12 @@ def main():
             cnt = rCnt[rEnd] - rCnt[rStart] + 1
             if start != 0:
                 cnt += sCnt[start - 1]
-                if road[start - 1] > road[end]:
-                    cnt += 1
+                if road[start - 1] <= road[end]:
+                    cnt -= 1
             if end != N - 1:
                 cnt += (sCnt[N - 1] - sCnt[end + 1] + 1)
-                if road[end + 1] < road[start]:
-                    cnt += 1
+                if road[end + 1] >= road[start]:
+                    cnt -= 1
             print(cnt)
 
 
