@@ -1,44 +1,47 @@
 import sys
-from math import inf
+from copy import deepcopy
 
 
 def main():
-    N = int(sys.stdin.readline())
-    M = int(sys.stdin.readline())
-    disMatrix = [[inf for j in range(N)] for i in range(N)]
-    pathMatrix = [[[] for j in range(N)] for i in range(N)]
-    for i in range(N):
+    n = int(sys.stdin.readline())
+    m = int(sys.stdin.readline())
+    inf = 100000 * 100000 + 1
+    disMatrix = [[inf for j in range(n)] for i in range(n)]
+    pathMatrix = [[[] for j in range(n)] for i in range(n)]
+    for i in range(n):
+        pathMatrix[i][i].append(i)
         disMatrix[i][i] = 0
-        for j in range(N):
-            pathMatrix[i][j].append(i)
-    for i in range(M):
+    for _ in range(m):
         a, b, c = map(int, sys.stdin.readline().split())
         a, b = a - 1, b - 1
         if c < disMatrix[a][b]:
             disMatrix[a][b] = c
             pathMatrix[a][b] = [a, b]
-    for k in range(N):
-        for i in range(N):
-            for j in range(N):
-                if disMatrix[i][k] + disMatrix[k][j] < disMatrix[i][j]:
-                    tmp = []
-                    for l in range(len(pathMatrix[i][k]) - 1):
-                        tmp.append(pathMatrix[i][k][l])
-                    for l in range(len(pathMatrix[k][j])):
-                        tmp.append(pathMatrix[k][j][l])
-                    disMatrix[i][j] = disMatrix[i][k] + disMatrix[k][j]
-                    pathMatrix[i][j] = tmp
-    for i in range(N):
-        for j in range(N):
-            print(disMatrix[i][j], end=' ')
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                tmpDis = disMatrix[i][k] + disMatrix[k][j]
+                if tmpDis < disMatrix[i][j]:
+                    path1, path2 = pathMatrix[i][k], pathMatrix[k][j]
+                    if path1[-1] == k:
+                        nPath1 = deepcopy(path1[:len(path1) - 1])
+                    if path2[0] == k:
+                        nPath2 = deepcopy(path2[1:])
+                    disMatrix[i][j] = tmpDis
+                    pathMatrix[i][j] = nPath1 + [k] + nPath2
+    for i in range(n):
+        for j in range(n):
+            if disMatrix[i][j] == inf:
+                print(0, end=' ')
+            else:
+                print(disMatrix[i][j], end=' ')
         print()
-    for i in range(N):
-        for j in range(N):
-            l = len(pathMatrix[i][j])
-            if l == 1:
+    for i in range(n):
+        for j in range(n):
+            if len(pathMatrix[i][j]) == 1:
                 print(0)
             else:
-                print(l, end=' ')
+                print(len(pathMatrix[i][j]), end=' ')
                 for p in pathMatrix[i][j]:
                     print(p + 1, end=' ')
                 print()
