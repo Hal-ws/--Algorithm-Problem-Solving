@@ -55,19 +55,74 @@ def main():
         if x1 == x2: #vertical
             for y in range(y1, y2 + 1):
                 nBoard[y][x1] = 1
-                if board[y][x1] != '1': # empty place is existing
+                if board[y][x1] != '1': # 원래 board에서 빈칸임
                     print(0)
                     return
-        else:
+        elif y1 == y2: # horizon
+            for x in range(x1, x2 + 1):
+                nBoard[y1][x] = 1
+                if board[y1][x] != '1': # 원래 board에서 빈칸임
+                    print(0)
+                    return
+        else: # 사선
             m = (y2 - y1) / (x2 - x1)
-            if m == 0 or m == 1 or m == -1:
-                m = int(m)
-                d = 0
-            else:
+            if m != 1 and m != -1:
                 print(0)
                 return
-    for p in range(edges):
+            m = int(m)
+            if m == 1:
+                sy = y1
+            else:
+                sy = y2
+            sx, ex = min(x1, x2), max(x1, x2)
+            d = 0
+            for x in range(sx, ex + 1):
+                nBoard[sy + d * m][x] = 1
+                if board[sy + d * m][x] != '1':
+                    print(0)
+                    return
+                d += 1
+    nBoard = painting([0, 0], nBoard, 2)
+    nBoard = painting(edges[0], nBoard, 1)
+    for i in range(12):
+        for j in range(12):
+            if board[i][j] == '0':
+                if nBoard[i][j] != 2:
+                    print(0)
+                    return
+            else:
+                if nBoard[i][j] != 1:
+                    print(0)
+                    return
+    for p in edges:
         print('%s %s' %(p[0], p[1]))
+
+
+def painting(start, nBoard, color):
+    dy = [-1, 1, 0, 0]
+    dx = [0, 0, -1, 1]
+    visit = [[0 for j in range(12)] for i in range(12)]
+    visit[start[0]][start[1]] = color
+    q = deque()
+    q.append(start)
+    while len(q) > 0:
+        tmp = q.popleft()
+        y, x = tmp[0], tmp[1]
+        nBoard[y][x] = color
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < 12 and 0 <= nx < 12 and visit[ny][nx] == 0:
+                if color == 2:
+                    if nBoard[ny][nx] == 0:
+                        nBoard[ny][nx] = color
+                        q.append([ny, nx])
+                        visit[ny][nx] = 1
+                else:
+                    if nBoard[ny][nx] == 0 or nBoard[ny][nx] == 1:
+                        nBoard[ny][nx] = color
+                        q.append([ny, nx])
+                        visit[ny][nx] = 1
+    return nBoard
 
 
 if __name__ == "__main__":
