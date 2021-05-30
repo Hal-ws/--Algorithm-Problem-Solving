@@ -14,30 +14,30 @@ def chkSignal(signal):
     while sIdx < l:
         if signal[sIdx] == '0':
             if sIdx >= l - 1:
-                return 'No'
+                return 'NO'
             if signal[sIdx + 1] == '0':
-                return 'No'
+                return 'NO'
             else:
                 sIdx += 2
         else: # 1로 시작
             if sIdx >= l - 3:
-                return 'No'
+                return 'NO'
             if signal[sIdx + 1] != '0' or signal[sIdx + 2] != '0':
-                return 'No'
+                return 'NO'
             flag = 0
-            for tIdx in range(sIdx + 1, l):
+            for tIdx in range(sIdx + 3, l):
                 if signal[tIdx] == '1':
                     flag = 1
                     if tIdx == l - 1:
-                        return 'Yes'
+                        return 'YES'
                     break
             if flag == 0:
-                return 'No'
+                return 'NO'
             flag = 0
             for idx2 in range(tIdx + 1, l):
                 if signal[idx2] != '1':
                     if idx2 == l - 1:
-                        return 'No'
+                        return 'NO'
                     if idx2 == l - 2:
                         sIdx = idx2
                         flag = 1
@@ -52,9 +52,9 @@ def chkSignal(signal):
                             flag = 1
                             break
             if flag == 0:
-                return 'Yes'
+                return 'YES'
             if sIdx <= tIdx:
-                return 'No'
+                return 'NO'
     return 'YES'
 
 
