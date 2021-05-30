@@ -15,7 +15,7 @@ def chkSignal(signal):
         if signal[sIdx] == '0':
             if sIdx >= l - 1:
                 return 'No'
-            if signal[sIdx + 1] == '1':
+            if signal[sIdx + 1] == '0':
                 return 'No'
             else:
                 sIdx += 2
@@ -28,6 +28,8 @@ def chkSignal(signal):
             for tIdx in range(sIdx + 1, l):
                 if signal[tIdx] == '1':
                     flag = 1
+                    if tIdx == l - 1:
+                        return 'Yes'
                     break
             if flag == 0:
                 return 'No'
@@ -37,10 +39,22 @@ def chkSignal(signal):
                     if idx2 == l - 1:
                         return 'No'
                     if idx2 == l - 2:
-                        
+                        sIdx = idx2
+                        flag = 1
+                        break
+                    else: # idx2 < l - 2:
+                        if signal[idx2 + 1] == '1': # 다음에 오는게 01임
+                            sIdx = idx2
+                            flag = 1
+                            break
+                        else: # 다음에 오는게 100이 옴
+                            sIdx = idx2 - 1
+                            flag = 1
+                            break
             if flag == 0:
+                return 'Yes'
+            if sIdx <= tIdx:
                 return 'No'
-
     return 'YES'
 
 
