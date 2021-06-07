@@ -6,27 +6,37 @@ def main():
     sys.setrecursionlimit(pow(10, 6))
     nodeInfo = [[0, 0, 0] for i in range(N + 1)] # left 갯수, right 갯수, level
     nodePos = [[0, 0] for i in range(N + 1)] # node의 level, x값
-    tree = [None]
+    tree = [0 for i in range(N + 1)]
+    parentBook = {}
     for i in range(N):
         node, left, right = map(int, sys.stdin.readline().split())
-        tree.append([left, right])
-    nodeInfo[1][2] = 1
-    cntLeaves(1, tree, nodeInfo, 1)
-    getPos(1, 1, N, nodePos, nodeInfo, tree, 1)
-    maxLevel = nodePos[-1][0]
+        tree[node] = [left, right]
+        parentBook[left] = node
+        parentBook[right] = node
+    curNode = N
+    while 1:
+        if parentBook.get(curNode) == None:
+            root = curNode
+            break
+        curNode = parentBook[curNode]
+    nodeInfo[root][2] = 1
+    cntLeaves(root, tree, nodeInfo, 1)
+    getPos(root, 1, N, nodePos, nodeInfo, tree, 1)
+    maxLevel = 0
+    for i in range(1, N + 1):
+        if nodePos[i][0] > maxLevel:
+            maxLevel = nodePos[i][0]
     ansLevel = 0
     maxWidth = 0
     lvlList = [[] for i in range(maxLevel + 1)]
-    for i in range(len(nodePos)):
+    for i in range(1, len(nodePos)):
         level, x = nodePos[i][0], nodePos[i][1]
         lvlList[level].append(x)
-    for level in range(1, len(lvlList)):
+    for level in range(1, maxLevel + 1):
         lvlList[level].sort()
         if lvlList[level][-1] - lvlList[level][0] + 1 > maxWidth:
             maxWidth = lvlList[level][-1] - lvlList[level][0] + 1
             ansLevel = level
-    print(nodePos)
-    print(nodeInfo)
     print('%s %s' %(ansLevel, maxWidth))
 
 
