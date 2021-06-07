@@ -1,7 +1,6 @@
 import sys
 
 
-
 def main():
     N = int(sys.stdin.readline())
     sys.setrecursionlimit(pow(10, 6))
