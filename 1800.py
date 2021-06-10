@@ -1,6 +1,5 @@
 import sys
 from collections import deque
-from math import inf
 
 
 def main():
@@ -27,7 +26,6 @@ def main():
 
 def chkPossible(maxP, K, connnect, N):
     visit = [[0 for j in range(N + 1)] for i in range(K + 1)]
-    flag = 0
     q = deque()
     q.append([1, K])
     visit[K][1] = 1
