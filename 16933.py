@@ -24,7 +24,6 @@ def bfs():
     visit[K][0][0] = 1
     breakableCnt[0][0] = K
     while len(q) > 0:
-        print('q: %s' %q)
         tmp = q.popleft()
         y, x, possK, time, cnt = tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]
         nxtD = (time + 1) % 2
@@ -38,13 +37,16 @@ def bfs():
                         visit[possK][ny][nx] = 1
                         breakableCnt[ny][nx] = possK
                         q.append([ny, nx, possK, nxtD, cnt + 1])
-                if board[ny][nx] == 1 and time == 0 and possK > 0 and visit[possK - 1][ny][nx] == 0:
-                    if breakableCnt[ny][nx] == 0 or breakableCnt[ny][nx] < possK:
-                        visit[possK - 1][ny][nx] = 1
-                        breakableCnt[ny][nx] = possK
-                        q.append([ny, nx, possK - 1, nxtD, cnt + 1])
-        if time == 1: # 밤일때는 하루 더 있어봐야함
-            q.append([y, x, possK, nxtD, cnt + 1])
+                if board[ny][nx] == 1:
+                    if time == 0:
+                        if possK > 0 and visit[possK - 1][ny][nx] == 0 and (breakableCnt[ny][nx] == 0 or breakableCnt[ny][nx] < possK):
+                            visit[possK - 1][ny][nx] = 1
+                            breakableCnt[ny][nx] = possK
+                            q.append([ny, nx, possK - 1, nxtD, cnt + 1])
+                    else:
+                        if visit[possK][y][x] < 2:
+                            q.append([y, x, possK, nxtD, cnt + 1])
+                            visit[possK][y][x] += 1
     return -1
 
 
