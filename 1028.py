@@ -19,15 +19,15 @@ def main():
     ld = [[0 for j in range(C)] for i in range(R)]
     lu = [[0 for j in range(C)] for i in range(R)]
     for j in range(C):
-        getrd(0, j, rd)
-        getld(0, j, ld)
-        getru(R - 1, j, ru)
-        getlu(R - 1, j, lu)
+        getLength(0, j, rd, 0)
+        getLength(0, j, ld, 3)
+        getLength(R - 1, j, ru, 1)
+        getLength(R - 1, j, lu, 2)
     for i in range(R):
-        getru(i, 0, ru)
-        getrd(i, 0, rd)
-        getlu(i, C - 1, lu)
-        getld(i, C - 1, ld)
+        getLength(i, 0, ru, 1)
+        getLength(i, 0, rd, 0)
+        getLength(i, C - 1, lu, 2)
+        getLength(i, C - 1, ld, 3)
     for i in range(R):
         for j in range(C):
             tmpMax = min(lu[i][j], ru[i][j])
@@ -41,85 +41,30 @@ def main():
     print(maxSize)
 
 
-def getrd(y, x, rd):
+def getLength(y, x, lBoard, num):
     global R, C, board
-    d = 1
     if board[y][x] == '0':
         l = 0
     else:
         l = 1
-    rd[y][x] = l
+    if num == 0: # rd
+        dy, dx = 1, 1
+    if num == 1: # ru
+        dy, dx = -1, 1
+    if num == 2: # lu
+        dy, dx = -1, -1
+    if num == 3: # ld
+        dy, dx = 1, -1
+    lBoard[y][x] = l
+    d = 1
     while 1:
-        cy, cx = y + d, x + d
+        cy, cx = y + dy * d, x + dx * d
         if 0 <= cy < R and 0 <= cx < C:
             if board[cy][cx] == '1':
                 l += 1
             else:
                 l = 0
-            rd[cy][cx] = l
-            d += 1
-        else:
-            break
-
-
-def getru(y, x, ru):
-    global R, C, board
-    d = 1
-    if board[y][x] == '0':
-        l = 0
-    else:
-        l = 1
-    ru[y][x] = l
-    while 1:
-        cy, cx = y - d, x + d
-        if 0 <= cy < R and 0 <= cx < C:
-            if board[cy][cx] == '1':
-                l += 1
-            else:
-                l = 0
-            ru[cy][cx] = l
-            d += 1
-        else:
-            break
-
-
-def getlu(y, x, lu):
-    global R, C, board
-    d = 1
-    if board[y][x] == '0':
-        l = 0
-    else:
-        l = 1
-    lu[y][x] = l
-    while 1:
-        cy, cx = y - d, x - d
-        if 0 <= cy < R and 0 <= cx < C:
-            if board[cy][cx] == '1':
-                l += 1
-            else:
-                l = 0
-            lu[cy][cx] = l
-            d += 1
-        else:
-            break
-
-
-def getld(y, x, ld):
-    global R, C, board
-    d = 1
-    if board[y][x] == '0':
-        l = 0
-    else:
-        l = 1
-    ld[y][x] = l
-    while 1:
-        cy, cx = y + d, x - d
-        if 0 <= cy < R and 0 <= cx < C:
-            if board[cy][cx] == '1':
-                l += 1
-            else:
-                l = 0
-            ld[cy][cx] = l
+            lBoard[cy][cx] = l
             d += 1
         else:
             break
