@@ -46,8 +46,12 @@ def getSum(b, c, tree, cIdx, coverIdx, treeL):
         ans += tree[cIdx]
     else:
         if cIdx * 2 + 1 < treeL:
-            getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
-            getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
+            nxtCover = coverIdx[cIdx * 2 + 1]
+            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c:
+                getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
+            nxtCover = coverIdx[cIdx * 2]
+            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c:
+                getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
 
 
 if __name__ == '__main__':
