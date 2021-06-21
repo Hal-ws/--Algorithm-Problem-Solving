@@ -2,6 +2,7 @@ import sys
 
 
 def main():
+    global ans
     N, M, K = map(int, sys.stdin.readline().split())
     i = 0
     while 1:
@@ -22,12 +23,14 @@ def main():
             coverIdx[idx // 2][1] = coverIdx[idx][1]
         else:
             coverIdx[idx // 2][0] = coverIdx[idx][0]
-    for i in range(K):
+    for i in range(M + K):
         a, b, c = map(int, sys.stdin.readline().split())
         if a == 1:
             changeNum(sIdx + b, c - tree[sIdx + b], tree)
         else:
-            print(getSum(b, c, tree, coverIdx))
+            ans = 0
+            getSum(sIdx + b, sIdx + c, tree, 1, coverIdx, len(tree))
+            print(ans)
 
 
 def changeNum(idx, diff, tree):
@@ -36,9 +39,15 @@ def changeNum(idx, diff, tree):
         idx = idx // 2
 
 
-def getSum(start, end, tree, coverIdx):
-
-    return 0
+def getSum(b, c, tree, cIdx, coverIdx, treeL):
+    global ans
+    start, end = coverIdx[cIdx][0], coverIdx[cIdx][1]
+    if b <= start <= c and b <= end <= c:
+        ans += tree[cIdx]
+    else:
+        if cIdx * 2 + 1 < treeL:
+            getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
+            getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
 
 
 if __name__ == '__main__':
