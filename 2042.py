@@ -2,7 +2,6 @@ import sys
 
 
 def main():
-    global ans
     N, M, K = map(int, sys.stdin.readline().split())
     i = 0
     while 1:
@@ -28,9 +27,7 @@ def main():
         if a == 1:
             changeNum(sIdx + b - 1, c - tree[sIdx + b - 1], tree)
         else:
-            ans = 0
-            getSum(sIdx + b - 1, sIdx + c - 1, tree, 1, coverIdx, len(tree))
-            print(ans)
+            print(getSum(sIdx + b - 1, sIdx + c - 1, tree, 1, coverIdx, len(tree)))
 
 
 def changeNum(idx, diff, tree):
@@ -40,18 +37,19 @@ def changeNum(idx, diff, tree):
 
 
 def getSum(b, c, tree, cIdx, coverIdx, treeL):
-    global ans
     start, end = coverIdx[cIdx][0], coverIdx[cIdx][1]
+    result, add1, add2 = 0, 0, 0
     if b <= start <= c and b <= end <= c:
-        ans += tree[cIdx]
+        result = tree[cIdx]
     else:
         if cIdx * 2 + 1 < treeL:
             nxtCover = coverIdx[cIdx * 2 + 1]
             if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c or nxtCover[0] <= b <= nxtCover[1] or nxtCover[0] <= c <= nxtCover[1]:
-                getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
+                add1 = getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
             nxtCover = coverIdx[cIdx * 2]
             if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c or nxtCover[0] <= b <= nxtCover[1] or nxtCover[0] <= c <= nxtCover[1]:
-                getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
+                add2 = getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
+    return result + add1 + add2
 
 
 if __name__ == '__main__':
