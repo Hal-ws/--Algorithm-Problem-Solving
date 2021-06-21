@@ -9,13 +9,13 @@ def main():
         if pow(2, i) >= N:
             tree = [0] * pow(2, i + 1)
             coverIdx = [[-1, -1] for j in range(pow(2, i + 1))]
-            sIdx = pow(2, i) - 1
+            sIdx = pow(2, i)
             break
         i += 1
-    for i in range(1, N + 1):
+    for i in range(N):
         val = int(sys.stdin.readline())
         tree[sIdx + i] = val
-    for i in range(sIdx + 1, len(coverIdx)):
+    for i in range(sIdx, len(coverIdx)):
         coverIdx[i] = [i, i]
     for idx in range(len(tree) - 1, 1, -1):
         tree[idx // 2] += tree[idx]
@@ -26,10 +26,10 @@ def main():
     for i in range(M + K):
         a, b, c = map(int, sys.stdin.readline().split())
         if a == 1:
-            changeNum(sIdx + b, c - tree[sIdx + b], tree)
+            changeNum(sIdx + b - 1, c - tree[sIdx + b - 1], tree)
         else:
             ans = 0
-            getSum(sIdx + b, sIdx + c, tree, 1, coverIdx, len(tree))
+            getSum(sIdx + b - 1, sIdx + c - 1, tree, 1, coverIdx, len(tree))
             print(ans)
 
 
@@ -47,10 +47,10 @@ def getSum(b, c, tree, cIdx, coverIdx, treeL):
     else:
         if cIdx * 2 + 1 < treeL:
             nxtCover = coverIdx[cIdx * 2 + 1]
-            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c:
+            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c or nxtCover[0] <= b <= nxtCover[1] or nxtCover[0] <= c <= nxtCover[1]:
                 getSum(b, c, tree, cIdx * 2 + 1, coverIdx, treeL)
             nxtCover = coverIdx[cIdx * 2]
-            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c:
+            if b <= nxtCover[0] <= c or b <= nxtCover[1] <= c or nxtCover[0] <= b <= nxtCover[1] or nxtCover[0] <= c <= nxtCover[1]:
                 getSum(b, c, tree, cIdx * 2, coverIdx, treeL)
 
 
