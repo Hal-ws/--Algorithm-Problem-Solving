@@ -17,14 +17,19 @@ def main():
                 stack.append([h, p])
             else:
                 tmpSize = 0
-                while h < stack[-1][0]:
+                while 1:
                     tmp = stack.pop()
                     tmpH, p2 = tmp[0], tmp[1]
+                    if h >= tmpH:
+                        stdH = lastH
+                        stdP = p2
+                        stack.append(tmp)
+                        break
                     if tmpSize < tmpH * (p - p2):
                         tmpSize = tmpH * (p - p2)
-                firstP = stack[-1][1]
-                if tmpSize < (p - firstP) * h:
-                    tmpSize = (p - firstP) * h
+                    lastH = tmpH
+                if tmpSize < stdH * (p - stdP - 1):
+                    tmpSize = stdH * (p - stdP - 1)
                 stack.append([h, p])
                 if ans < tmpSize:
                     ans = tmpSize
