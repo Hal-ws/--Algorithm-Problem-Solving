@@ -22,6 +22,8 @@ def findcommonroot():
         if root1 == None:
             break
         rootChk[root1] += 1
+        if rootChk[root1] == 2:
+            return root1
         node1 = root1
     while 1:
         root2 = tree[node2]
