@@ -7,6 +7,7 @@ def main():
     cityInfo = [[] for i in range(N + 1)]
     disMatrix = [[inf for j in range(N + 1)] for i in range(N + 1)]
     for i in range(1, N + 1):
+        disMatrix[i][i] = 0
         cityInfo[i] = list(map(int, sys.stdin.readline().split()))
     M = int(sys.stdin.readline())
     for i in range(1, N - 1):
@@ -22,10 +23,14 @@ def main():
                     disMatrix[i][j] = T
                 if T < disMatrix[j][i]:
                     disMatrix[j][i] = T
+    for k in range(1, N + 1):
+        for i in range(1, N + 1):
+            for j in range(1, N + 1):
+                if disMatrix[i][k] + disMatrix[k][j] < disMatrix[i][j]:
+                    disMatrix[i][j] = disMatrix[i][k] + disMatrix[k][j]
     for i in range(M):
         a, b = map(int, sys.stdin.readline().split())
-
-
+        print(disMatrix[a][b])
 
 
 if __name__ == '__main__':
