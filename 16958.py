@@ -10,8 +10,8 @@ def main():
         disMatrix[i][i] = 0
         cityInfo[i] = list(map(int, sys.stdin.readline().split()))
     M = int(sys.stdin.readline())
-    for i in range(1, N - 1):
-        for j in range(i + 1, N):
+    for i in range(1, N):
+        for j in range(i + 1, N + 1):
             city1, city2 = cityInfo[i], cityInfo[j]
             dis1 = abs(city1[1] - city2[1]) + abs(city1[2] - city2[2])
             if dis1 < disMatrix[i][j]:
