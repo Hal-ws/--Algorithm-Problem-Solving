@@ -1,35 +1,37 @@
 import sys
-from queue import PriorityQueue
+import heapq
+from math import inf
 
 
 def main():
     N = int(sys.stdin.readline())
     M = int(sys.stdin.readline())
+    pMatrix = [[100000 for j in range(N + 1)] for i in range(N + 1)]
     price = [[] for i in range(N + 1)]
-    q = PriorityQueue()
-    minPrice = [None] * (N + 1)
+    q = []
+    minPrice = [inf] * (N + 1)
     for i in range(M):
         s, e, p = map(int, sys.stdin.readline().split())
-        price[s].append([e, p]) #e 도시로 가는 비용 p
+        if p < pMatrix[s][e]:
+            pMatrix[s][e] = p
+    for i in range(1, N + 1):
+        for j in range(1, N + 1):
+            if pMatrix[i][j] != 100000:
+                price[i].append([j, pMatrix[i][j]])
     start, end = map(int, sys.stdin.readline().split())
-    q.put([0, start]) # 거리, 좌표
     minPrice[start] = 0
-    while q.empty() == False:
-        tmp = q.get()
-        node, cPrice = tmp[1], tmp[0]
-        linked = price[node]
-        for nxt in linked:
-            nxtC, tPrice = nxt[0], cPrice + nxt[1]
-            if minPrice[nxtC] == None:
-                minPrice[nxtC] = tPrice
-                q.put([tPrice, nxtC])
-            else:
-                if tPrice < minPrice[nxtC]:
-                    minPrice[nxtC] = tPrice
-                    q.put([tPrice, nxtC])
+    heapq.heappush(q, [0, start])
+    minPrice[start] = 0
+    while len(q) > 0:
+        tmp = heapq.heappop(q)
+        cPrice, cPos = tmp[0], tmp[1]
+        for nxt in price[cPos]:
+            nxtP, sumPrice = nxt[0], cPrice + nxt[1]
+            if sumPrice < minPrice[nxtP]:
+                minPrice[nxtP] = sumPrice
+                heapq.heappush(q, [sumPrice, nxtP])
     print(minPrice[end])
 
 
 if __name__ == '__main__':
     main()
-
