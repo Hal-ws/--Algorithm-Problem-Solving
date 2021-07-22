@@ -36,7 +36,7 @@ def main():
     else:
         if yd1 * xd2 == yd2 * xd1: # 기울기 같음
             if yd1 * (-x1) * xd2 + y1 * xd1 * xd2 == yd2 * (-x3) * xd1 + y3 * xd1 * xd2: # 같은 y절편
-                if x1 <= x3 <= x2 or x1 <= x4 <= x2: # 범위 겹침
+                if x1 <= x3 <= x2 or x1 <= x4 <= x2 or x3 <= x1 <= x4 or x3 <= x2 <= x4: # 범위 겹침
                     ans = 1
                 else: #범위 안겹침
                     ans = 0
