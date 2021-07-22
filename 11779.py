@@ -1,41 +1,41 @@
 import sys
-from queue import PriorityQueue
+import heapq
+from math import inf
 
 
 def main():
-    global connect, n
     n = int(sys.stdin.readline())
     m = int(sys.stdin.readline())
-    connect = [[] for i in range(n + 1)]
+    pMatrix = [[100000 for j in range(n + 1)] for i in range(n + 1)]
+    price = [[] for i in range(n + 1)]
+    minPrice = [inf for i in range(n + 1)]
+    minPath = ''
+    hq = []
     for i in range(m):
         s, e, p = map(int, sys.stdin.readline().split())
-        connect[s].append([e, p])
-    start, target = map(int, sys.stdin.readline().split())
-    daik(start, target)
-
-
-def daik(start, target):
-    global connect, n
-    visit = [-1] * (n + 1)
-    q = PriorityQueue()
-    visit[start] = 0
-    q.put([0, start, str(start)]) # 가격 합, 현재 위치, path
-    ansPath = None
-    while q.empty() != True:
-        tmp = q.get()
-        curP, curN, curPath = tmp[0], tmp[1], tmp[2]
-        for nxt in connect[curN]:
-            nxtNode, tPrice = nxt[0], nxt[1] + curP
-            nPath = curPath + ' ' + str(nxtNode)
-            if visit[nxtNode] == -1 or tPrice < visit[nxtNode]:
-                visit[nxtNode] = tPrice
-                if nxtNode == target: # target에 갈때
-                    ansPath = nPath
-                else:
-                    q.put([tPrice, nxtNode, nPath])
-    print(visit[target])
-    print(ansPath.count(' ') + 1)
-    print(ansPath)
+        pMatrix[s][e] = min(pMatrix[s][e], p)
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if pMatrix[i][j] != 100000:
+                price[i].append([j, pMatrix[i][j]])
+    start, end = map(int, sys.stdin.readline().split())
+    minPrice[start] = 0
+    heapq.heappush(hq, [0, start, str(start)])
+    while len(hq) > 0:
+        tmp = heapq.heappop(hq)
+        cPrice, cPos, cPath = tmp[0], tmp[1], tmp[2]
+        for nxt in price[cPos]:
+            nxtP, tPrice = nxt[0], cPrice + nxt[1]
+            if tPrice < minPrice[nxtP]:
+                minPrice[nxtP] = tPrice
+                heapq.heappush(hq, [tPrice, nxtP, cPath + ',' + str(nxtP)])
+                if nxtP == end:
+                    minPath = cPath + ',' + str(nxtP)
+    print(minPrice[end])
+    minPath = list(map(int, minPath.split(',')))
+    print(len(minPath))
+    for p in minPath:
+        print(p, end=' ')
 
 
 if __name__ == '__main__':
