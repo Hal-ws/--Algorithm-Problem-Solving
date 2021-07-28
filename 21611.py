@@ -2,154 +2,139 @@ import sys
 
 
 def main():
-    global N, board, bombCnt
-    N, M = map(int, sys.stdin.readline().split())
-    dy = [-1, 1, 0, 0]
-    dx = [0, 0, -1, 1]
-    bombCnt = [0, 0, 0, 0] # 0번 idx는 dummy
     board = []
-    answer = 0
+    N, M = map(int, sys.stdin.readline().split())
     for i in range(N):
         board.append(list(map(int, sys.stdin.readline().split())))
-    cY, cX = N // 2, N // 2 # 중심의 좌표
+    bombBalls = [None, 0, 0, 0]
+    posList = trace(N) # idx별 좌표를 기록. 상어의 idx는 0
+    answer = 0
+    ballList = [0 for i in range(N * N)]
+    for idx in range(1, N * N):
+        y, x = posList[idx][0], posList[idx][1]
+        ballList[idx] = board[y][x]
     for i in range(M):
-        d, s = map(int, sys.stdin.readline().split())
-        for k in range(1, s + 1):
-            y, x = cY + k * dy[d - 1], cX + k * dx[d - 1]
-            board[y][x] = 0
-        result = tracking(0, [])
-        tracking(1, result)
-        bomb()
-        transform()
+        blizzard(board, bombBalls, N, posList, ballList)
     for i in range(1, 4):
-        answer += i * bombCnt[i]
+        answer += (i * bombBalls[i])
     print(answer)
 
 
-def tracking(flag, numList): # board 에 넣을때는 1, board를 돌면서 list를 얻을때는 0
-    global N, board
-    maxDis = 1
-    l = len(numList)
-    if flag:
-        idx = 0 #numList에 있는 값들을 board에 삽입
-    else:
-        result = []
-    y, x = N // 2, N // 2
-    endflag = 0
+def blizzard(board, bombBalls, N, posList, ballList):
+    d, s = map(int, sys.stdin.readline().split())
+    sy, sx = N // 2, N // 2
+    dy = [0, -1, 1, 0, 0]
+    dx = [0, 0, 0, -1, 1]
+    for i in range(1, s + 1):
+        ny, nx = sy + i * dy[d], sx + i * dx[d]
+        board[ny][nx] = 0
+    for idx in range(1, N * N):
+        y, x = posList[idx][0], posList[idx][1]
+        ballList[idx] = board[y][x]
+    move(board, N, posList, ballList)
     while 1:
-        for i in range(maxDis):
-            x -= 1
-            if flag:
-                if idx < l:
-                    board[y][x] = numList[idx]
-                    idx += 1
-                else:
-                    board[y][x] = 0
-            else:
-                if board[y][x] != 0:
-                    result.append(board[y][x])
-            if y == 0 and x == 0: # 다 순회함
-                endflag = 1
-                break
-        if endflag:
+        if bomb(board, N, posList, ballList, bombBalls) == 0:
             break
-        for i in range(maxDis):
-            y += 1
-            if flag:
-                if idx < l:
-                    board[y][x] = numList[idx]
-                    idx += 1
-                else:
-                    board[y][x] = 0
-            else:
-                if board[y][x] != 0:
-                    result.append(board[y][x])
-        maxDis += 1
-        for i in range(maxDis):
-            x += 1
-            if flag:
-                if idx < l:
-                    board[y][x] = numList[idx]
-                    idx += 1
-                else:
-                    board[y][x] = 0
-            else:
-                if board[y][x] != 0:
-                    result.append(board[y][x])
-        for i in range(maxDis):
-            y -= 1
-            if flag:
-                if idx < l:
-                    board[y][x] = numList[idx]
-                    idx += 1
-                else:
-                    board[y][x] = 0
-            else:
-                if board[y][x] != 0:
-                    result.append(board[y][x])
-        maxDis += 1
-    if flag == 0:
-        return result
+    ballList = transform(board, N, posList, ballList)
 
 
-def bomb():
-    global N, board, bombCnt
-    bombList = tracking(0, [])
-    bStack = [] # stack에 넣어놓고 폭발
-    for i in range(len(bombList)):
-        tmp = bombList[i]
-        if len(bStack) > 0: # 1개 이상 쌓였을때
-            if bStack[-1] == tmp:
-                bStack.append(tmp)
-            else: # 다름. 앞에서 터뜨릴수 있는게 있는지 다 확인해본다
-                if len(bStack) >= 4 and bStack[-1] == bStack[-2] == bStack[-3] == bStack[-4]:
-                    std = bStack[-1]
-                    cnt = 0
-                    while 1:
-                        if bStack[-1] == std:
-                            cnt += 1
-                            bStack.pop()
-                        else:
-                            break
-                        if len(bStack) == 0:
-                            break
-                    bombCnt[std] += cnt
-                bStack.append(tmp)
-        else:
-            bStack.append(tmp)
-    if len(bStack) >= 4 and bStack[-1] == bStack[-2] == bStack[-3] == bStack[-4]:
-        std = bStack[-1]
-        cnt = 0
-        while 1:
-            if bStack[-1] == std:
+def move(board, N, posList, ballList):
+    for i in range(1, N * N):
+        if ballList[i] != 0:
+            mvIdx = -1
+            for j in range(i - 1, 0, -1):
+                if ballList[j] == 0: # 앞으로 앞당겨준다
+                    mvIdx = j
+                else:
+                    break
+            if mvIdx != -1:
+                ballList[i], ballList[mvIdx] = ballList[mvIdx], ballList[i]
+    for idx in range(1, N * N):
+        y, x = posList[idx][0], posList[idx][1]
+        board[y][x] = ballList[idx]
+
+
+def bomb(board, N, posList, ballList, bombBalls): #4개 이상 겹치는거 제거
+    flag = 0
+    cnt = 1
+    std = ballList[1]
+    if std != 0:
+        for idx in range(2, N * N):
+            if ballList[idx] == std:
                 cnt += 1
-                bStack.pop()
-            else:
-                break
-            if len(bStack) == 0:
-                break
-        bombCnt[std] += cnt
-    tracking(1, bStack)
+                if cnt == 4:
+                    for i in range(4):
+                        ballList[idx - i] = 0
+                    bombBalls[std] += 4
+                    flag = 1
+                if cnt > 4:
+                    ballList[idx] = 0
+                    bombBalls[std] += 1
+            elif ballList[idx] != 0:
+                cnt = 1
+                std = ballList[idx]
+        if flag: # 폭발했으니 이동시켜준다
+            for idx in range(1, N * N):
+                y, x = posList[idx][0], posList[idx][1]
+                board[y][x] = ballList[idx]
+            move(board, N, posList, ballList)
+    return flag
 
 
-def transform():
-    global N, board, bombCnt
-    numList = tracking(0, [])
-    numList.append(10)
-    tList = []
-    cnt, num = 1, numList[0]
-    for i in range(1, len(numList)):
-        tmp = numList[i]
-        if tmp == num:
-            num = tmp
+def transform(board, N, posList, ballList):
+    nballList = [0]
+    std = ballList[1]
+    cnt = 1
+    for idx in range(2, N * N):
+        if ballList[idx] == std:
             cnt += 1
-        else: # 다르다.
-            tList.append(cnt)
-            tList.append(num)
+            if idx == N * N - 1: # 끝까지 다 갔을때
+                nballList.append(cnt)
+                nballList.append(std)
+        else:
+            nballList.append(cnt)
+            nballList.append(std)
             cnt = 1
-            num = numList[i]
-    tracking(1, tList)
-    return 0
+            std = ballList[idx]
+    l = len(nballList)
+    if l > N * N:
+        nballList = nballList[:N * N]
+    else:
+        for _ in range(N * N - l):
+            nballList.append(0)
+    for idx in range(N * N):
+        y, x = posList[idx][0], posList[idx][1]
+        board[y][x] = nballList[idx]
+    return nballList
+
+
+def trace(N): # in일지, out일지 결정하는 flag
+    y, x = N // 2, N // 2
+    posList = [[None, None] for i in range(N * N)]
+    posList[0] = [y, x]
+    idx = 1
+    d = 1
+    while 1:
+        for _ in range(d):
+            x -= 1
+            posList[idx] = [y, x]
+            if y == x == 0:
+                return posList
+            idx += 1
+        for _ in range(d):
+            y += 1
+            posList[idx] = [y, x]
+            idx += 1
+        d += 1
+        for _ in range(d):
+            x += 1
+            posList[idx] = [y, x]
+            idx += 1
+        for _ in range(d):
+            y -= 1
+            posList[idx] = [y, x]
+            idx += 1
+        d += 1
 
 
 if __name__ == '__main__':
