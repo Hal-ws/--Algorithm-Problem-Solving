@@ -54,7 +54,7 @@ def move(board, N, posList, ballList):
         board[y][x] = ballList[idx]
 
 
-def bomb(board, N, posList, ballList, bombBalls): #4개 이상 겹치는거 제거
+def bomb(board, N, posList, ballList, bombBalls):
     flag = 0
     cnt = 1
     std = ballList[1]
@@ -62,7 +62,7 @@ def bomb(board, N, posList, ballList, bombBalls): #4개 이상 겹치는거 제�
         for idx in range(2, N * N):
             if ballList[idx] == std:
                 cnt += 1
-                if cnt == 4:
+                if cnt == 4:  #4개 이상 겹치는거 제거
                     for i in range(4):
                         ballList[idx - i] = 0
                     bombBalls[std] += 4
@@ -73,7 +73,7 @@ def bomb(board, N, posList, ballList, bombBalls): #4개 이상 겹치는거 제�
             elif ballList[idx] != 0:
                 cnt = 1
                 std = ballList[idx]
-        if flag: # 폭발했으니 이동시켜준다
+        if flag: # 폭발했으니 이동
             for idx in range(1, N * N):
                 y, x = posList[idx][0], posList[idx][1]
                 board[y][x] = ballList[idx]
@@ -95,6 +95,8 @@ def transform(board, N, posList, ballList):
             else:
                 nballList.append(cnt)
                 nballList.append(std)
+                if ballList[idx] == 0:
+                    break
                 cnt = 1
                 std = ballList[idx]
         l = len(nballList)
