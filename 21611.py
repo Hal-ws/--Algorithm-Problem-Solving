@@ -35,7 +35,7 @@ def blizzard(board, bombBalls, N, posList, ballList):
     while 1:
         if bomb(board, N, posList, ballList, bombBalls) == 0:
             break
-    ballList = transform(board, N, posList, ballList)
+    transform(board, N, posList, ballList)
 
 
 def move(board, N, posList, ballList):
@@ -85,27 +85,26 @@ def transform(board, N, posList, ballList):
     nballList = [0]
     std = ballList[1]
     cnt = 1
-    for idx in range(2, N * N):
-        if ballList[idx] == std:
-            cnt += 1
-            if idx == N * N - 1: # 끝까지 다 갔을때
+    if std != 0:
+        for idx in range(2, N * N):
+            if ballList[idx] == std:
+                cnt += 1
+                if idx == N * N - 1: # 끝까지 다 갔을때
+                    nballList.append(cnt)
+                    nballList.append(std)
+            else:
                 nballList.append(cnt)
                 nballList.append(std)
-        else:
-            nballList.append(cnt)
-            nballList.append(std)
-            cnt = 1
-            std = ballList[idx]
-    l = len(nballList)
-    if l > N * N:
-        nballList = nballList[:N * N]
-    else:
-        for _ in range(N * N - l):
-            nballList.append(0)
-    for idx in range(N * N):
-        y, x = posList[idx][0], posList[idx][1]
-        board[y][x] = nballList[idx]
-    return nballList
+                cnt = 1
+                std = ballList[idx]
+        l = len(nballList)
+        if l < N * N:
+            for _ in range(N * N - l):
+                nballList.append(0)
+        for idx in range(N * N):
+            y, x = posList[idx][0], posList[idx][1]
+            board[y][x] = nballList[idx]
+            ballList[idx] = nballList[idx]
 
 
 def trace(N): # in일지, out일지 결정하는 flag
