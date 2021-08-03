@@ -20,10 +20,25 @@ def main():
         print('YES')
     else:
         print('NO')
-            
+
 
 def chk(before, after, cBoard, N, M):
-    return 0
+    dIdx = None
+    for i in range(N):
+        for j in range(M):
+            if before[i][j] != after[i][j]: # 변화가 생김
+                if dIdx == None:
+                    dIdx = cBoard[i][j]
+                    std = after[i][j]
+                elif dIdx != cBoard[i][j]: # 2군데 이상의 공간에서 변화가 생김
+                    return 0
+    ## dIdx로 색칠된 공간이 전부 다 std로 변했는지 확인함
+    for i in range(N):
+        for j in range(M):
+            if cBoard[i][j] == dIdx:
+                if after[i][j] != std:
+                    return 0
+    return 1
                 
 
 def coloring(before, cBoard, cIdx, sy, sx, N, M):
@@ -45,7 +60,5 @@ def coloring(before, cBoard, cIdx, sy, sx, N, M):
                 visit[ny][nx] = 1
 
     
-
-
 if __name__ == '__main__':
     main()
