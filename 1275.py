@@ -2,6 +2,7 @@ import sys
 
 
 def main():
+    global segTree, coverNode
     N, Q = map(int, sys.stdin.readline().split())
     nList = list(map(int, sys.stdin.readline().split()))
     layer = 1
@@ -27,12 +28,12 @@ def main():
         x, y, a, b = map(int, sys.stdin.readline().split())
         x, y, a = x - 1, y - 1, a - 1
         x, y, a, b = min(sIdx + x, sIdx + y), max(sIdx + x, sIdx + y), sIdx + a, b
-        print(getSum(segTree, coverNode, x, y, 1))
-        change(segTree, a, b)
+        print(getSum(x, y, 1))
+        change(a, b)
     return 0
 
 
-def getSum(segTree, coverNode, a, b, node): # a부터 b까지 더한 값을 return함. node는 현재 node
+def getSum(a, b, node): # a부터 b까지 더한 값을 return함. node는 현재 node
     bLeft, bRight = coverNode[node][0], coverNode[node][1]
     if a == bLeft and b == bRight:
         return segTree[node]
@@ -40,18 +41,18 @@ def getSum(segTree, coverNode, a, b, node): # a부터 b까지 더한 값을 retu
     val1, val2 = 0, 0
     if coverNode[leftNode][0] <= a <= coverNode[leftNode][1]:
         if b > coverNode[leftNode][1]:
-            val1 = getSum(segTree, coverNode, a, coverNode[leftNode][1], leftNode)
+            val1 = getSum(a, coverNode[leftNode][1], leftNode)
         else:
-            val1 = getSum(segTree, coverNode, a, b, leftNode)
+            val1 = getSum(a, b, leftNode)
     if coverNode[rightNode][0] <= b <= coverNode[rightNode][1]:
         if a < coverNode[rightNode][0]:
-            val2 = getSum(segTree, coverNode, coverNode[rightNode][0], b, rightNode)
+            val2 = getSum(coverNode[rightNode][0], b, rightNode)
         else:
-            val2 = getSum(segTree, coverNode, a, b, rightNode)
+            val2 = getSum(a, b, rightNode)
     return val1 + val2
 
 
-def change(segTree, idx, b): #a번째 수를 b로 변경
+def change(idx, b): #a번째 수를 b로 변경
     diff = b - segTree[idx]
     while idx >= 1:
         segTree[idx] += diff
