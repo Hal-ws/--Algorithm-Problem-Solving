@@ -1,25 +1,27 @@
 def main():
     S = input()
-    stack = []
+    numStack = [] # 슛자 group과 그 숫자가 시작한 idx를 저장
+    pStack = [] # 괄호와 해당 괄호의 idx를 저장
     cnt = 0
-    lastNum = None
+    idx = None
     for i in range(len(S)):
-        if S[i] != '(' and S[i] != ')':
+        if S[i] != '(' and S[i] !=')':
+            if idx != None:
+                idx = i
             cnt += 1
-            lastNum = int(S[i])
         else:
             if S[i] == '(':
-                stack.append([cnt - 1, lastNum])
-                print('stack: %s' %stack)
-                cnt = 0
+                numStack.append([cnt - 1, int(S[i - 1]), idx])
+                pStack.append(['(', i])
+                idx = None
             if S[i] == ')':
-                stack.append([cnt, lastNum])
-                tmp2 = stack.pop()
-                tmp1 = stack.pop()
-                stack.append([tmp1[1] * tmp2[0] + tmp1[0], tmp2[1]])
-                print('stack: %s' %stack)
-                continue
-    print(stack)
+                if S[i - 1] != ')': # 숫자가 있을때
+                    num, tIdx = int(S[i - 1]), idx
+                    numStack.append([cnt, int(S[i - 1]), idx])
+                while 1:
+                    pIdx = pStack[-1][1]
+                idx = None
+            cnt = 0
 
 
 if __name__ == '__main__':
