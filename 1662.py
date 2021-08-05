@@ -6,6 +6,7 @@ def main():
     idx = None
     for i in range(len(S)):
         flag = 1
+        print('i: %s' %i)
         if S[i] != '(' and S[i] !=')':
             if idx == None:
                 idx = i
@@ -21,7 +22,9 @@ def main():
                     flag = 0
                 elif S[i - 1] != ')': # 숫자가 있는경우
                     val = int(S[i - 1])
+                    print('괄호 닫기')
                     numStack.append([cnt, val, idx])
+                    print('numStack: %s' %numStack)
                     pStack.pop()
                 else:
                     pIdx = pStack[-1][1]
@@ -39,9 +42,16 @@ def main():
                 if flag:
                     tmp1 = numStack.pop()
                     tmp2 = numStack.pop()
-                    numStack.append([tmp1[0] * tmp2[1] + tmp2[0], tmp1[1], tmp2[2]])
+                    if tmp2[1] == 0:
+                        val = int(S[tmp2[2]])
+                    else:
+                        val = tmp1[1]
+                    numStack.append([tmp1[0] * tmp2[1] + tmp2[0], val, tmp2[2]])
+                    if numStack[-1][0] == 0:
+                        numStack.pop()
                 idx = None
             cnt = 0
+        print(numStack)
     answer = cnt
     while len(numStack) > 0:
         tmp = numStack.pop()
