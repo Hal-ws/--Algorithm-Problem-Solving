@@ -13,7 +13,7 @@ def main():
             cnt += 1
         else:
             if S[i] == '(':
-                numStack.append([cnt - 1, int(S[i - 1]), idx])
+                numStack.append([cnt, int(S[i - 1]), idx])
                 pStack.append(['(', i])
                 idx = None
             if S[i] == ')': # 해당 괄호 안에 있는 값들을 전부 처리함
@@ -22,8 +22,8 @@ def main():
                     flag = 0
                 elif S[i - 1] != ')': # 숫자가 있는경우
                     val = int(S[i - 1])
-                    print('괄호 닫기')
                     numStack.append([cnt, val, idx])
+                    print('i: %s' %i)
                     print('numStack: %s' %numStack)
                     pStack.pop()
                 else:
@@ -42,13 +42,13 @@ def main():
                 if flag:
                     tmp1 = numStack.pop()
                     tmp2 = numStack.pop()
-                    if tmp2[1] == 0:
-                        val = int(S[tmp2[2]])
-                    else:
-                        val = tmp1[1]
-                    numStack.append([tmp1[0] * tmp2[1] + tmp2[0], val, tmp2[2]])
-                    if numStack[-1][0] == 0:
-                        numStack.pop()
+                if tmp2[1] == 0:
+                    val = int(S[tmp2[2]])
+                else:
+                    val = tmp1[1]
+                numStack.append([tmp1[0] * tmp2[1] + tmp2[0] - 1, val, tmp2[2]])
+                if numStack[-1][0] == 0:
+                    numStack.pop()
                 idx = None
             cnt = 0
         print(numStack)
