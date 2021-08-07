@@ -29,13 +29,22 @@ def dfs(pos, idx, l, dp, target, aList, K):
         dp[y][x] = 1
         return 1
     nxtC = target[idx + 1] # 다음 문자
+    flag = 0
     for nxtPos in aList[ord(nxtC) - 65]: # 다음 좌표
         if pickable(pos, nxtPos, K): # 이동 가능한 좌표
             ny, nx = nxtPos[0], nxtPos[1]
-            if dp[ny][nx] != 0: #이미 도달한 값이 있을때. 더이상 진행안함
+            if dp[ny][nx] == 0: # 아직 진행 안해본 곳일때 진행
+                tmp = dfs(nxtPos, idx + 1, l, dp, target, aList, K)
+                if tmp > 0:
+                    dp[y][x] += tmp
+                    flag = 1
+            elif dp[ny][nx] > 0: #이미 도달한 값이 있을때. 더이상 진행안함
                 dp[y][x] += dp[ny][nx]
-            else:
-                dp[y][x] += dfs(nxtPos, idx + 1, l, dp, target, aList, K)
+                flag = 1
+            else: # 불가능한 곳일때. 안감
+                continue
+    if flag == 0:
+        dp[y][x] = -1
     return dp[y][x]
 
 
