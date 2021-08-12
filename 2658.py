@@ -10,6 +10,15 @@ def main():
     endPoints = [[], [], [], []]
     sIdx = [[0, 12, 1, 0, 12, 1], [11, -1, -1, 0, 12, 1], [0, 12, 1, 0, 12, 1], [0, 12, 1, 11, -1, -1]]
     board.append('000000000000')
+    flag = 0
+    for i in range(12):
+        for j in range(12):
+            if board[i][j] == '1':
+                flag = 1
+                break
+    if flag == 0:
+        print(0)
+        return 0
     edges = []
     for i in range(4):
         sy, ey, d1 = sIdx[i][0], sIdx[i][1], sIdx[i][2]
@@ -55,15 +64,9 @@ def main():
         if x1 == x2: #vertical
             for y in range(y1, y2 + 1):
                 nBoard[y][x1] = 1
-                if board[y][x1] != '1': # 원래 board에서 빈칸임
-                    print(0)
-                    return
         elif y1 == y2: # horizon
             for x in range(x1, x2 + 1):
                 nBoard[y1][x] = 1
-                if board[y1][x] != '1': # 원래 board에서 빈칸임
-                    print(0)
-                    return
         else: # 사선
             m = (y2 - y1) / (x2 - x1)
             if m != 1 and m != -1:
@@ -78,9 +81,6 @@ def main():
             d = 0
             for x in range(sx, ex + 1):
                 nBoard[sy + d * m][x] = 1
-                if board[sy + d * m][x] != '1':
-                    print(0)
-                    return
                 d += 1
     nBoard = painting([0, 0], nBoard, 2)
     nBoard = painting(edges[0], nBoard, 1)
@@ -111,17 +111,18 @@ def painting(start, nBoard, color):
         nBoard[y][x] = color
         for i in range(4):
             ny, nx = y + dy[i], x + dx[i]
+            flag = 0
             if 0 <= ny < 12 and 0 <= nx < 12 and visit[ny][nx] == 0:
                 if color == 2:
                     if nBoard[ny][nx] == 0:
-                        nBoard[ny][nx] = color
-                        q.append([ny, nx])
-                        visit[ny][nx] = 1
+                        flag = 1
                 else:
                     if nBoard[ny][nx] == 0 or nBoard[ny][nx] == 1:
-                        nBoard[ny][nx] = color
-                        q.append([ny, nx])
-                        visit[ny][nx] = 1
+                        flag = 1
+            if flag:
+                nBoard[ny][nx] = color
+                q.append([ny, nx])
+                visit[ny][nx] = 1
     return nBoard
 
 
