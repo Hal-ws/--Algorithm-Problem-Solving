@@ -4,7 +4,6 @@ import sys
 def main():
     N, T = map(int, sys.stdin.readline().split())
     cityInfo = [[] for i in range(N + 1)]
-    disMatrix = [[0 for j in range(N + 1)] for i in range(N + 1)]
     nearSpecialCity = [0 for i in range(N + 1)]
     for i in range(1, N + 1):
         cityInfo[i] = list(map(int, sys.stdin.readline().split()))
@@ -16,20 +15,15 @@ def main():
                 if tDis < nearDis:
                     nearDis = tDis
                     nearSpecialCity[i] = j # i city와 가장 가까운 special city는 j (자기자신이 될수도 있음)
-    for i in range(1, N + 1):
-        for j in range(1, N + 1):
-            if i != j:
-                chk1, chk2 = cityInfo[i][0], cityInfo[j][0]
-                if chk1 == chk2 == 1:
-                    dis = getDis(cityInfo, i, j, T)
-                else:
-                    dis = normalCity(cityInfo, i, j, T, nearSpecialCity)
-                disMatrix[i][j] = dis
-                disMatrix[j][i] = dis
     M = int(sys.stdin.readline())
     for i in range(M):
         a, b = map(int, sys.stdin.readline().split())
-        print(disMatrix[a][b])
+        chk1, chk2 = cityInfo[a][0], cityInfo[b][0]
+        if chk1 == chk2 == 1:
+            dis = getDis(cityInfo, a, b, T)
+        else:
+            dis = normalCity(cityInfo, a, b, T, nearSpecialCity)
+        print(dis)
 
 
 def getDis(cityInfo, a, b, T):
