@@ -26,15 +26,14 @@ def daikstra(connect, N, M):
         usedT, cost, pos = tmp[0], tmp[1], tmp[2]
         for nxt in connect[pos]: # 연결된 다른 지점 확인
             nxtP, addC, addT = nxt[0], nxt[1], nxt[2]
-            if cost + addC <= M: # M원보다 작아야함
-                if usedT + addT < dp[nxtP][cost + addC]:
-                    dp[nxtP][cost + addC] = usedT + addT
-                    for i in range(cost + addC + 1, M + 1):
-                        if dp[nxtP][i] > usedT + addT:
-                            dp[nxtP][i] = usedT + addT
-                        else:
-                            break
-                    heapq.heappush(hq, [usedT + addT, cost + addC, nxtP])
+            if cost + addC <= M and usedT + addT < dp[nxtP][cost + addC]: # M원보다 작아야함
+                dp[nxtP][cost + addC] = usedT + addT
+                for i in range(cost + addC + 1, M + 1):
+                    if dp[nxtP][i] > usedT + addT:
+                        dp[nxtP][i] = usedT + addT
+                    else:
+                        break
+                heapq.heappush(hq, [usedT + addT, cost + addC, nxtP])
     answer = min(dp[N])
     if answer < 1000 * 10000 + 1:
         return answer
