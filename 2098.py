@@ -11,20 +11,21 @@ def main():
         matrix.append(list(map(int, sys.stdin.readline().split())))
     dp = [[-1 for j in range(N)] for i in range(pow(2, N))]
     q = deque()
-    q.append([1, 0]) # path, 현재 node 저장
+    q.append([1, 0, 0]) # path, 현재 node, 이동비용 저장
     dp[1][0] = 0
     while len(q) > 0:
         tmp = q.popleft()
-        path, cNode = tmp[0], tmp[1]
-        for i in range(N):
-            if matrix[cNode][i] != 0:
-                nxtNode = pow(2, i) # nxtNode를 2진법으로 표현
-                nPath = path | nxtNode
-                cost = dp[path][cNode] + matrix[cNode][i]
-                if nPath != path:
-                    if dp[nPath][i] == -1 or cost < dp[nPath][i]:
-                        dp[nPath][i] = cost
-                        q.append([nPath, i])
+        path, cNode, curCost = tmp[0], tmp[1], tmp[2]
+        if dp[path][cNode] == curCost: # 새로 갱신된게 없을때
+            for i in range(N):
+                if matrix[cNode][i] != 0:
+                    nxtNode = pow(2, i) # nxtNode를 2진법으로 표현
+                    nPath = path | nxtNode
+                    cost = dp[path][cNode] + matrix[cNode][i]
+                    if nPath != path:
+                        if dp[nPath][i] == -1 or cost < dp[nPath][i]:
+                            dp[nPath][i] = cost
+                            q.append([nPath, i, cost])
     for i in range(1, N):
         if matrix[i][0] != 0 and dp[pow(2, N) - 1][i] != -1:
             cost = dp[pow(2, N) - 1][i] + matrix[i][0]
