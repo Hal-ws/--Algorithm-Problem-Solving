@@ -19,19 +19,20 @@ def main():
         return
     crash[0][0] = 0
     while len(q1) > 0:
-        y, x, cnt = q1[0][0], q1[0][1], q1[0][2]
-        for i in range(4):
-            ny, nx = y + dy[i], x + dx[i]
-            if 0 <= ny < N and 0 <= nx < M:
-                if room[ny][nx] == 0: #빈칸일때
-                    if cnt < crash[ny][nx]: # 더 적게 부수고 도착할 수 있는 경우라면
-                        crash[ny][nx] = cnt
-                        q1.append([ny, nx, cnt])
-                else: #벽일때
-                    if cnt + 1 < crash[ny][nx]:
-                        crash[ny][nx] = cnt + 1
-                        q1.append([ny, nx, cnt + 1])
-        q1.popleft()
+        tmp = q1.popleft()
+        y, x, cnt = tmp[0], tmp[1], tmp[2]
+        if crash[y][x] == cnt:
+            for i in range(4):
+                ny, nx = y + dy[i], x + dx[i]
+                if 0 <= ny < N and 0 <= nx < M:
+                    if room[ny][nx] == 0: #빈칸일때
+                        if cnt < crash[ny][nx]: # 더 적게 부수고 도착할 수 있는 경우라면
+                            crash[ny][nx] = cnt
+                            q1.append([ny, nx, cnt])
+                    else: #벽일때
+                        if cnt + 1 < crash[ny][nx]:
+                            crash[ny][nx] = cnt + 1
+                            q1.append([ny, nx, cnt + 1])
     print(crash[N - 1][M - 1])
 
 
