@@ -7,32 +7,31 @@ def main():
         if tmpList[0] == 0:
             break
         else:
-            hList = tmpList[1:] + [0]
+            hList = tmpList[1:]
         stack = [[0, 0]] # 높이, 위치
         ans = 0
         for i in range(len(hList)):
             p, h = i + 1, hList[i]
             topH = stack[-1][0]
-            if topH <= h:
-                stack.append([h, p])
+            print('stack: %s' %stack)
+            if topH < h:
+                if topH == 0:
+                    if ans < h:
+                        ans = h
+                elif ans < topH * (p - stack[-1][1] + 1):
+                    ans = topH * (p - stack[-1][1] + 1)
             else:
                 tmpSize = 0
-                while 1:
-                    tmp = stack.pop()
-                    tmpH, p2 = tmp[0], tmp[1]
-                    if h >= tmpH:
-                        stdH = lastH
-                        stdP = p2
-                        stack.append(tmp)
+                while len(stack) > 0:
+                    if stack[-1][0] < h:
+                        tmpSize = h * (p - stack[-1][1])
                         break
-                    if tmpSize < tmpH * (p - p2):
-                        tmpSize = tmpH * (p - p2)
-                    lastH = tmpH
-                if tmpSize < stdH * (p - stdP - 1):
-                    tmpSize = stdH * (p - stdP - 1)
-                stack.append([h, p])
+                    else:
+                        stack.pop()
                 if ans < tmpSize:
                     ans = tmpSize
+            stack.append([h, p])
+            print('answer: %s' %ans)
         print(ans)
 
 
