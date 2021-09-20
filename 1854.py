@@ -23,10 +23,8 @@ def main():
                 disList[nxtP].sort()
                 heapq.heappush(hq, [tDis, nxtP])
             else:  # 이미 k개가 꽉찬 경우
-                maxDis = disList[nxtP][-1]
-                if tDis <= maxDis: # 최대 거리보다 더 작은 값을 집어넣어야 함
-                    disList[nxtP].pop()
-                    disList[nxtP].append(tDis)
+                if tDis <= disList[nxtP][-1]: # 최대 거리보다 더 작은 값을 집어넣어야 함
+                    disList[nxtP][-1] = tDis
                     disList[nxtP].sort()
                     heapq.heappush(hq, [tDis, nxtP])
     for i in range(1, n + 1):
