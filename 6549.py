@@ -18,11 +18,14 @@ def main():
                 while 1:
                     tmp = stack.pop()
                     tIdx, tH = tmp[0], tmp[1]
+                    w = idx - tIdx
                     if tH <= curH:
+                        if lastH != None:
+                            if ans <= (w - 1) * lastH:
+                                ans = (w - 1) * lastH
                         stack.append([tIdx, tH])
                         stack.append([idx, curH])
                         break
-                    w = idx - tIdx
                     if lastH != None:
                         if ans <= (w - 1) * lastH:
                             ans = (w - 1) * lastH
