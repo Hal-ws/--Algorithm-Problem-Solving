@@ -6,7 +6,7 @@ def main():
     start = list(map(int, sys.stdin.readline()[:N]))
     target = list(map(int, sys.stdin.readline()[:N]))
     val1 = changing(0, start, target, N)
-    val2 = changing(0, start, target, N)
+    val2 = changing(1, start, target, N)
     if min(val1, val2) == 100001:
         print(-1)
     else:
