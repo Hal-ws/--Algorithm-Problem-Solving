@@ -5,7 +5,6 @@ from collections import deque
 def main():
     N, M, R = map(int, sys.stdin.readline().split())
     board = []
-    R = R % (2 * N + 2 * (M - 2))
     for i in range(N):
         board.append(list(map(int, sys.stdin.readline().split())))
     board = trying(board, N, M, R)
@@ -21,6 +20,7 @@ def trying(board, h, w, R):
     while 1:
         q = deque()
         y, x = sy, sx
+
         for i in range(y, h):
             if newBoard[i][x] != 0:
                 break
@@ -40,7 +40,9 @@ def trying(board, h, w, R):
             if newBoard[y][j] != 0:
                 break
             q.append(board[y][j])
-        for i in range(R):
+        nw, nh = w - 2 * sy, h - 2 * sx
+        newR = R % (nw * 2 + nh * 2 - 4)
+        for i in range(newR):
             q.appendleft(q.pop())
         y, x = sy, sx
         for i in range(y, h):
