@@ -1,148 +1,120 @@
-from collections import deque
 import sys
+from collections import deque
 
 
 def main():
-    global N, M, board
     N, M = map(int, sys.stdin.readline().split())
+    visit = [[[[0 for j in range(M)] for i in range(N)] for k in range(M)] for l in range(N)]
     board = []
-    q = deque()
     for i in range(N):
         board.append(list(sys.stdin.readline()[:M]))
     for i in range(N):
         for j in range(M):
-            if board[i][j] == "R":
-                red = [i, j]
+            if board[i][j] == 'B':
+                bPos = [i, j]
                 board[i][j] = '.'
-            if board[i][j] == "B":
-                blue = [i, j]
+            if board[i][j] == 'R':
+                rPos = [i, j]
                 board[i][j] = '.'
-    state = [red, blue, 0, -1] #redball, blueball, cnt, 시작방향 (-1은 시작)
-    q.append(state)
-    ans = -1
+    visit[rPos[0]][rPos[1]][bPos[0]][bPos[1]] = 1
+    q = deque()
+    q.append([rPos, bPos, 0])  # 붉은공, 파란공, 움직인 횟수
     while len(q) > 0:
-        r, b, cnt, dir = q[0][0], q[0][1], q[0][2], q[0][3] #ball이 사라지면 none을오 표시
-        if r == None and b != None:
-            ans = cnt
+        tmp = q.popleft()
+        rPos, bPos, cnt = tmp[0], tmp[1], tmp[2]
+        if cnt == 10:
             break
-        if r != None and b != None: #두 공이 다 있을때 다음 횟수 고려
-            ry, rx, by, bx = r[0], r[1], b[0], b[1]
-            if cnt <= 9: #10번 미만으롱 움직인 상태만 추가한다
-                if dir != 2: #상으로 갈 수 있을 때
-                    if ry <= by:
-                        nr = up(r, b)
-                        nb = up(b, nr)
-                    else:
-                        nb = up(b, r)
-                        nr = up(r, nb)
-                    q.append([nr, nb, cnt + 1, 0])
-                if dir != 3: #오른쪽으로 이동가능
-                    if bx <= rx: #rball이 더 오른쪽
-                        nr = right(r, b)
-                        nb = right(b, nr)
-                    else:
-                        nb = right(b, r)
-                        nr = right(r, nb)
-                    q.append([nr, nb, cnt + 1, 1])
-                if dir != 0: #아래로 이동
-                    if by <= ry: #red 먼저 움직임
-                        nr = down(r, b)
-                        nb = down(b, nr)
-                    else:
-                        nb = down(b, r)
-                        nr = down(r, nb)
-                    q.append([nr, nb, cnt + 1, 2])
-                if dir != 1: #왼쪽으로 이동
-                    if rx <= bx:
-                        nr = left(r, b)
-                        nb = left(b, nr)
-                    else:
-                        nb = left(b, r)
-                        nr = left(r, nb)
-                    q.append([nr, nb, cnt + 1, 3])
-        q.popleft()
-    print(ans)
+        for i in range(4):
+            result = move(rPos, bPos, board, i)
+            rY, rX, bY, bX = result[1][0], result[1][1], result[2][0], result[2][1]
+            if result[0] == 0 and visit[rY][rX][bY][bX] == 0: # 이동 성공. 빨간공만 hole에 집어넣는건 실패
+                q.append([[rY, rX], [bY, bX], cnt + 1])
+                visit[rY][rX][bY][bX] = 1
+            if result[0] == 1: # 빨간공만 hole에 집어넣는것 성공함
+                print(cnt + 1)
+                return
+    print(-1)
 
 
-def up(mv, stay):
-    global N, M, board
-    x = mv[1]
-    for y in range(mv[0] - 1, -1, -1):
-        if stay != None:
-            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
-                ny = y + 1
-                nxt = [ny, x]
-                break
-        else:
-            if board[y][x] == "#": #다른 볼과 겹칠 때
-                ny = y + 1
-                nxt = [ny, x]
-                break
-        if board[y][x] == 'O': #구멍 만남
-            nxt = None
+def move(rPos, bPos, board, d):
+    rY, rX = rPos[0], rPos[1]
+    bY, bX = bPos[0], bPos[1]
+    board[rY][rX] = 'R'
+    board[bY][bX] = 'B'
+    dy = [-1, 1, 0, 0]  # d는 상 하 좌 우 순서대로
+    dx = [0, 0, -1, 1]
+    rFlag, bFlag = 1, 1
+    rFirst = 0  # 빨간색이 꼭 먼저 움직여야 하는 상황.
+    result = 0
+    while 1:
+        if rFlag + bFlag == 0:
             break
-    return nxt
+        if d == 0:
+            if rY < bY:
+                rFirst = 1
+        if d == 1:
+            if rY > bY:
+                rFirst = 1
+        if d == 2:
+            if rX < bX:
+                rFirst = 1
+        if d == 3:
+            if rX > bX:
+                rFirst = 1
+        if rFirst:  # 빨간색 먼저 움직인다
+            if rFlag:
+                nxtRY, nxtRX = rY + dy[d], rX+ dx[d]
+                if board[nxtRY][nxtRX] == 'O':
+                    rFlag = 0  # 붉은 공은 더이상 못움직임
+                    board[rY][rX] = '.'
+                    result = 1
+                elif board[nxtRY][nxtRX] == '.':
+                    board[nxtRY][nxtRX] = 'R'
+                    board[rY][rX] = '.'
+                    rY, rX = nxtRY, nxtRX
+                else:
+                    rFlag = 0
+            if bFlag:
+                nxtBY, nxtBX = bY + dy[d], bX + dx[d]
+                if board[nxtBY][nxtBX] == 'O':
+                    board[bY][bX] = '.'
+                    result = -1
+                    break
+                elif board[nxtBY][nxtBX] == '.':
+                    board[nxtBY][nxtBX] = 'R'
+                    board[bY][bX] = '.'
+                    bY, bX = nxtBY, nxtBX
+                else:
+                    bFlag = 0
+        else: # 파란색 먼저 움직인다
+            if bFlag:
+                nxtBY, nxtBX = bY + dy[d], bX + dx[d]
+                if board[nxtBY][nxtBX] == 'O':
+                    board[bY][bX] = '.'
+                    result = -1
+                    break
+                elif board[nxtBY][nxtBX] == '.':
+                    board[nxtBY][nxtBX] = 'B'
+                    board[bY][bX] = '.'
+                    bY, bX = nxtBY, nxtBX
+                else:
+                    bFlag = 0
+            if rFlag:
+                nxtRY, nxtRX = rY + dy[d], rX + dx[d]
+                if board[nxtRY][nxtRX] == 'O':
+                    rFlag = 0  # 붉은 공은 더이상 못움직임
+                    board[rY][rX] = '.'
+                    result = 1
+                elif board[nxtRY][nxtRX] == '.':
+                    board[nxtRY][nxtRX] = 'R'
+                    board[rY][rX] = '.'
+                    rY, rX = nxtRY, nxtRX
+                else:
+                    rFlag = 0
+    board[rY][rX] = '.'
+    board[bY][bX] = '.'
+    return [result, [rY, rX], [bY, bX]]
 
 
-def down(mv, stay):
-    global N, M, board
-    x = mv[1]
-    for y in range(mv[0] + 1, N):
-        if stay != None:
-            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
-                ny = y - 1
-                nxt = [ny, x]
-                break
-        else:
-            if board[y][x] == "#": #다른 볼과 겹칠 때
-                ny = y - 1
-                nxt = [ny, x]
-                break
-        if board[y][x] == 'O': #구멍 만남
-            nxt = None
-            break
-    return nxt
-
-
-def right(mv, stay):
-    global N, M, board
-    y = mv[0]
-    for x in range(mv[1] + 1, M):
-        if stay != None:
-            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
-                nx = x - 1
-                nxt = [y, nx]
-                break
-        else:
-            if board[y][x] == "#": #다른 볼과 겹칠 때 or 벽에 부딪힐때
-                nx = x - 1
-                nxt = [y, nx]
-                break
-        if board[y][x] == 'O': #구멍 만남
-            nxt = None
-            break
-    return nxt
-
-
-def left(mv, stay):
-    global N, M, board
-    y = mv[0]
-    for x in range(mv[1] - 1, -1, -1):
-        if stay != None:
-            if (y == stay[0] and x == stay[1]) or board[y][x] == "#":
-                nx = x + 1
-                nxt = [y, nx]
-                break
-        else:
-            if board[y][x] == "#": #다른 볼과 겹칠 때
-                nx = x + 1
-                nxt = [y, nx]
-                break
-        if board[y][x] == 'O': #구멍 만남
-            nxt = None
-            break
-    return nxt
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
