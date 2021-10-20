@@ -4,94 +4,93 @@ from copy import deepcopy
 
 
 def main():
-    global N
     N = int(sys.stdin.readline())
     board = []
-    ans = 0
     for i in range(N):
         board.append(list(map(int, sys.stdin.readline().split())))
-    cases = list(product([0, 1, 2, 3], repeat = 5))
+    cases = list(product([0, 1, 2, 3], repeat=5))
+    ans = 0
     for case in cases:
-        tmp = deepcopy(board)
-        for i in range(5):
-            if case[i] == 0:
-                updown(tmp, 0, 1)
-            if case[i] == 1:
-                leftright(tmp, N - 1, -1)
-            if case[i] == 2:
-                updown(tmp, N - 1, -1)
-            if case[i] == 3:
-                leftright(tmp, 0, 1)
-        for i in range(N):
-            for j in range(N):
-                if ans <= tmp[i][j]:
-                    ans = tmp[i][j]
+        newBoard = deepcopy(board)
+        result = getResult(newBoard, case, N)
+        if result > ans:
+            ans = result
+            if ans == 128:
+                print(case)
+                break
     print(ans)
 
 
-def updown(tmp, stdIdx, factor):
-    global N
-    sumChk = [[0 for j in range(N)] for i in range(N)]
-    if factor == 1:
-        start, end = 1, N
-    else:
-        start, end = N - 2, -1
-    for j in range(N):
-        mvIdx = stdIdx
-        for i in range(start, end, factor):
-            if tmp[i][j] != 0: #빈칸 아니면 움직임
-                if tmp[mvIdx][j] == 0: #비어있는 칸으로 움직임
-                    tmp[mvIdx][j] = tmp[i][j]
-                    tmp[i][j] = 0
-                else:
-                    if tmp[i][j] == tmp[mvIdx][j]: #같음
-                        if sumChk[mvIdx][j] == 0: # 합쳐야함
-                            sumChk[mvIdx][j] = 1
-                            tmp[mvIdx][j] = tmp[mvIdx][j] * 2
-                            tmp[i][j] = 0
-                        else: # 못합침
-                            tmp[mvIdx + factor][j] = tmp[i][j]
-                            if mvIdx + factor != i: # 움직일수 있음
-                                tmp[i][j] = 0
-                        mvIdx += factor
-                    else: # 다름
-                        tmp[mvIdx + factor][j] = tmp[i][j]
-                        if mvIdx + factor != i: # 움직일수 있음
-                            tmp[i][j] = 0
-                        mvIdx += factor
-
-
-def leftright(tmp, stdIdx, factor):
-    global N
-    sumChk = [[0 for j in range(N)] for i in range(N)]
-    if factor == -1: # right
-        start, end = N - 2, -1
-    else:
-        start, end = 1, N
+def getResult(newBoard, mList, N):
+    result = 0
+    for d in mList:
+        move(newBoard, d, N)
     for i in range(N):
-        mvIdx = stdIdx
-        for j in range(start, end, factor):
-            if tmp[i][j] != 0:
-                if tmp[i][mvIdx] == 0: #빈칸으로 움직임
-                    tmp[i][mvIdx] = tmp[i][j]
-                    tmp[i][j] = 0
-                else:
-                    if tmp[i][mvIdx] == tmp[i][j]:
-                        if sumChk[i][mvIdx] == 0: #합쳐야함
-                            sumChk[i][mvIdx] = 1
-                            tmp[i][mvIdx] = tmp[i][mvIdx] * 2
-                            tmp[i][j] = 0
+        for j in range(N):
+            if newBoard[i][j] > result:
+                result = newBoard[i][j]
+    return result
+
+
+def move(newBoard, d, N):  # d: 0, 1, 2, 3 -> 상, 하, 좌, 우
+    sumChk = [[0 for j in range(N)] for i in range(N)]
+    if d == 0:
+        for x in range(N):
+            for y in range(N):
+                if newBoard[y][x] > 0:
+                    for i in range(y - 1, -1, -1):
+                        if newBoard[i][x] == 0:
+                            newBoard[i][x], newBoard[i + 1][x] = newBoard[i + 1][x], newBoard[i][x]
+                        elif newBoard[i][x] == newBoard[i + 1][x] and sumChk[i][x] == 0:
+                            sumChk[i][x] = 1
+                            newBoard[i][x] *= 2
+                            newBoard[i + 1][x] = 0
+                            break
                         else:
-                            tmp[mvIdx + factor][j] = tmp[i][j]
-                            if mvIdx + factor != i: #움직일수 있음
-                                tmp[i][j] = 0
-                        mvIdx += factor
-                    else:
-                        tmp[i][mvIdx + factor] = tmp[i][j]
-                        if mvIdx + factor != j: #움직일수 있음
-                            tmp[i][j] = 0
-                        mvIdx += factor
+                            break
+    if d == 1:
+        for x in range(N):
+            for y in range(N - 1, -1, -1):
+                if newBoard[y][x] > 0:
+                    for i in range(y + 1, N):
+                        if newBoard[i][x] == 0:
+                            newBoard[i][x], newBoard[i - 1][x] = newBoard[i - 1][x], newBoard[i][x]
+                        elif newBoard[i][x] == newBoard[i - 1][x] and sumChk[i][x] == 0:
+                            sumChk[i][x] = 1
+                            newBoard[i][x] *= 2
+                            newBoard[i - 1][x] = 0
+                            break
+                        else:
+                            break
+    if d == 2:
+        for y in range(N):
+            for x in range(N):
+                if newBoard[y][x] > 0:
+                    for j in range(x - 1, -1, -1):
+                        if newBoard[y][j] == 0:
+                            newBoard[y][j], newBoard[y][j + 1] = newBoard[y][j + 1], newBoard[y][j]
+                        elif newBoard[y][j] == newBoard[y][j + 1] and sumChk[y][j] == 0:
+                            sumChk[y][j] = 1
+                            newBoard[y][j] *= 2
+                            newBoard[y][j + 1] = 0
+                            break
+                        else:
+                            break
+    if d == 3:
+        for y in range(N):
+            for x in range(N - 1, -1, -1):
+                if newBoard[y][x] > 0:
+                    for j in range(x + 1, N):
+                        if newBoard[y][j] == 0:
+                            newBoard[y][j], newBoard[y][j - 1] = newBoard[y][j - 1], newBoard[y][j]
+                        elif newBoard[y][j] == newBoard[y][j - 1] and sumChk[y][j] == 0:
+                            sumChk[y][j] = 1
+                            newBoard[y][j] *= 2
+                            newBoard[y][j - 1] = 0
+                            break
+                        else:
+                            break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
