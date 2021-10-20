@@ -15,9 +15,6 @@ def main():
         result = getResult(newBoard, case, N)
         if result > ans:
             ans = result
-            if ans == 128:
-                print(case)
-                break
     print(ans)
 
 
