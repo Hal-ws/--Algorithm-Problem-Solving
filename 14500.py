@@ -3,98 +3,40 @@ import sys
 
 def main():
     N, M = map(int, sys.stdin.readline().split())
-    paper = []
+    board = []
     for i in range(N):
-        paper.append(list(map(int, sys.stdin.readline().split())))
-    #bar
-    max1 = 0
-    for i in range(N):
-        for j in range(M - 3):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i][j + 2] + paper[i][j + 3]
-            max1 = max(temp, max1)
-    for i in range(N - 3):
-        for j in range(M):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i + 2][j] + paper[i + 3][j]
-            max1 = max(temp, max1)
-    #box
-    max2 = 0
-    for i in range(N - 1):
-        for j in range(M - 1):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i][j + 1] + paper[i + 1][j + 1]
-            max2 = max(temp, max2)
-    # 꺾인 bar
-    max3 = 0
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i + 2][j] + paper[i + 2][j + 1]
-            max3 = max(max3, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i][j + 2] + paper[i + 1][j]
-            max3 = max(max3, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i + 1][j + 1] + paper[i + 2][j + 1]
-            max3 = max(max3, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j + 2] + paper[i + 1][j + 2] + paper[i + 1][j + 1] + paper[i + 1][j]
-            max3 = max(max3, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i + 2][j] + paper[i + 2][j + 1] + paper[i + 1][j + 1] + paper[i][j + 1]
-            max3 = max(max3, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i + 1][j + 1] + paper[i + 1][j + 2]
-            max3 = max(max3, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j + 1] + paper[i][j] + paper[i + 1][j] + paper[i + 2][j]
-            max3 = max(max3, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i][j + 2] + paper[i + 1][j + 2]
-            max3 = max(max3, temp)
-    # 두번꺾임
-    max4 = 0
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i + 1][j + 1] + paper[i + 2][j + 1]
-            max4 = max(max4, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i + 1][j] + paper[i + 1][j + 1] + paper[i][j + 1] + paper[i][j + 2]
-            max4 = max(max4, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j + 1] + paper[i + 1][j + 1] + paper[i + 1][j] + paper[i + 2][j]
-            max4 = max(max4, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i + 1][j + 1] + paper[i + 1][j + 2]
-            max4 = max(max4, temp)
-    # 마지막
-    max5 = 0
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j + 1] + paper[i + 1][j + 1] + paper[i + 1][j] + paper[i + 1][j + 2]
-            max5 = max(max5, temp)
-    for i in range(N - 1):
-        for j in range(M - 2):
-            temp = paper[i][j] + paper[i][j + 1] + paper[i + 1][j + 1] + paper[i][j + 2]
-            max5 = max(max5, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j] + paper[i + 1][j] + paper[i + 1][j + 1] + paper[i + 2][j]
-            max5 = max(max5, temp)
-    for i in range(N - 2):
-        for j in range(M - 1):
-            temp = paper[i][j + 1] + paper[i + 1][j + 1] + paper[i + 1][j] + paper[i + 2][j + 1]
-            max5 = max(max5, temp)
-    print(max(max1, max2, max3, max4, max5))
+        board.append(list(map(int, sys.stdin.readline().split())))
+    pieceList = []
+    pieceList.append([[1, 1, 1, 1]])
+    pieceList.append([[1, 1], [1, 1]])
+    pieceList.append([[1, 0], [1, 0], [1, 1]])
+    pieceList.append([[0, 1], [0, 1], [1, 1]])
+    pieceList.append([[1, 0], [1, 1], [0, 1]])
+    pieceList.append([[0, 1], [1, 1], [1, 0]])
+    pieceList.append([[1, 1, 1], [0, 1, 0]])
+    ans = 0
+    for piece in pieceList:
+        for _ in range(4):
+            piece = rotation(piece)
+            h, w = len(piece), len(piece[0])
+            for sY in range(N - h + 1):
+                for sX in range(M - w + 1):
+                    tmpAns = 0
+                    for i in range(h):
+                        for j in range(w):
+                            tmpAns += piece[i][j] * board[sY + i][sX + j]
+                    ans = max(ans, tmpAns)
+    print(ans)
+
+
+def rotation(piece):
+    h, w = len(piece), len(piece[0])
+    newPiece = [[0 for j in range(h)] for i in range(w)]
+    for i in range(w):
+        for j in range(h):
+            newPiece[i][j] = piece[h - 1 - j][i]
+    return newPiece
 
 
 if __name__ == "__main__":
     main()
-
