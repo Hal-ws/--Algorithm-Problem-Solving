@@ -1,59 +1,52 @@
-from itertools import combinations
-from collections import deque
 import sys
+from itertools import combinations
+from copy import deepcopy
+from collections import deque
+
 
 def main():
     N, M = map(int, sys.stdin.readline().split())
-    room, empty, virus, ans, wallcnt = [0] * N, [], [], 64, 0
+    board = []
     for i in range(N):
-        room[i] = list(map(int, sys.stdin.readline().split()))
+        board.append(list(map(int, sys.stdin.readline().split())))
+    emptyList = []
+    virusList = []
     for i in range(N):
         for j in range(M):
-            if room[i][j] == 0:
-                empty.append([i, j])
-            if room[i][j] == 2:
-                virus.append([i, j])
-            if room[i][j] == 1:
-                wallcnt += 1
-    cases = list(combinations(empty, 3))
-    lc = len(cases)
-    for i in range(lc):
-        danger = getarea(room, cases[i], virus, N, M)
-        if danger <= ans:
-            ans = danger
-    print(N * M - (wallcnt + 3) - ans)
+            if board[i][j] == 0:
+                emptyList.append([i, j])
+            if board[i][j] == 2:
+                virusList.append([i, j])
+    cases = list(combinations(emptyList, 3))
+    ans = 0
+    for case in cases:
+        newBoard = deepcopy(board)
+        ans = max(ans, getArea(newBoard, virusList, case, N, M))
+    print(ans)
 
 
-def getarea(room, wall, virus, N, M):
+def getArea(board, virusList, walls, N, M):
+    result = 0
+    for pos in walls:
+        board[pos[0]][pos[1]] = 1
     q = deque()
-    cnt = len(virus)
-    visit = [[0 for i in range(M)] for j in range(N)]
-    for i in range(3):
-        room[wall[i][0]][wall[i][1]] = 1
-    for i in range(cnt):
-        q.append(virus[i])
-        visit[virus[i][0]][virus[i][1]] = 1
+    dy = [-1, 1, 0, 0]
+    dx = [0, 0, -1, 1]
+    for vPos in virusList:
+        q.append(vPos)
     while len(q) > 0:
-        if q[0][0] > 0 and visit[q[0][0] - 1][q[0][1]] == 0 and room[q[0][0] - 1][q[0][1]] == 0:
-            q.append([q[0][0] - 1, q[0][1]])
-            visit[q[0][0] - 1][q[0][1]] = 1
-            cnt += 1
-        if q[0][0] < N - 1 and visit[q[0][0] + 1][q[0][1]] == 0 and room[q[0][0] + 1][q[0][1]] == 0:
-            q.append([q[0][0] + 1, q[0][1]])
-            visit[q[0][0] + 1][q[0][1]] = 1
-            cnt += 1
-        if q[0][1] > 0 and visit[q[0][0]][q[0][1] - 1] == 0 and room[q[0][0]][q[0][1] - 1] == 0:
-            q.append([q[0][0], q[0][1] - 1])
-            visit[q[0][0]][q[0][1] - 1] = 1
-            cnt += 1
-        if q[0][1] < M - 1 and visit[q[0][0]][q[0][1] + 1] == 0 and room[q[0][0]][q[0][1] + 1] == 0:
-            q.append([q[0][0], q[0][1] + 1])
-            visit[q[0][0]][q[0][1] + 1] = 1
-            cnt += 1
-        del q[0]
-    for i in range(3):
-        room[wall[i][0]][wall[i][1]] = 0
-    return cnt
+        tmp = q.popleft()
+        y, x = tmp[0], tmp[1]
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < N and 0 <= nx < M and board[ny][nx] == 0:
+                board[ny][nx] = 2
+                q.append([ny, nx])
+    for i in range(N):
+        for j in range(M):
+            if board[i][j] == 0:
+                result += 1
+    return result
 
 
 if __name__ == "__main__":
