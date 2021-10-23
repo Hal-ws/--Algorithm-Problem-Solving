@@ -4,261 +4,59 @@ import sys
 def main():
     N = int(sys.stdin.readline())
     board = []
+    ans = 0
     for i in range(N):
         board.append(list(map(int, sys.stdin.readline().split())))
-    tornado = [N // 2, N // 2] #최초 토네이도의 좌표
-    distance = 1
-    cnt = 0
-    endflag = 0
-    while 1: #좌상단으로 가면 종료
-        for i in range(1, distance + 1): #좌로 이동
-            tornado[1] -= 1
-            if tornado[1] < 0: #토네이도가 밖으로 나감
-                endflag = 1
-                break
-            cnt += movingdust(board, tornado, 2, N)
-        if endflag:
-            break
-        for i in range(1, distance + 1): #하
-            tornado[0] += 1
-            cnt += movingdust(board, tornado, 3, N)
-        distance += 1
-        for i in range(1, distance + 1): #우
-            tornado[1] += 1
-            cnt += movingdust(board, tornado, 0, N)
-        for i in range(1, distance + 1): #상
-            tornado[0] -= 1
-            cnt += movingdust(board, tornado, 1, N)
-        distance += 1
-    print(cnt)
+    vectorList = []
+    vectorList.append([[0, 0, 2, 0, 0], [0, 10, 7, 1, 0], [5, 0, 0, 0, 0], [0, 10, 7, 1, 0], [0, 0, 2, 0, 0]])
+    vectorList.append([[0, 0, 0, 0, 0], [0, 1, 0, 1, 0], [2, 7, 0, 7, 2], [0, 10, 0, 10, 0], [0, 0, 5, 0, 0]])
+    vectorList.append([[0, 0, 2, 0, 0], [0, 1, 7, 10, 0], [0, 0, 0, 0, 5], [0, 1, 7, 10, 0], [0, 0, 2, 0, 0]])
+    vectorList.append([[0, 0, 5, 0, 0], [0, 10, 0, 10, 0], [2, 7, 0, 7, 2], [0, 1, 0, 1, 0], [0, 0, 0, 0, 0]])
+    y, x = N // 2, N // 2
+    d = 1
+    while 1:
+        for j in range(d):
+            x -= 1
+            ans += tornado(board, y, x, 0, N, vectorList)
+            if y == 0 and x == 0:
+                print(ans)
+                return
+        for i in range(d):
+            y += 1
+            ans += tornado(board, y, x, 1, N, vectorList)
+        d += 1
+        for j in range(d):
+            x += 1
+            ans += tornado(board, y, x, 2, N, vectorList)
+        for i in range(d):
+            y -= 1
+            ans += tornado(board, y, x, 3, N, vectorList)
+        d += 1
 
 
-def movingdust(board, pos, direction, N): #pos에 있는
-    out = 0
-    y, x = pos[0], pos[1]
-    dust = board[y][x]
-    left = dust
-    if direction == 0:
-        moving = dust * 5 // 100
-        if 0 <= x + 2 < N:
-            board[y][x + 2] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 10 // 100
-        if 0 <= y - 1 < N and 0 <= x + 1 < N :
-            board[y - 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x + 1 < N :
-            board[y + 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 7 // 100
-        if 0 <= y - 1 < N:
-            board[y - 1][x] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N:
-            board[y + 1][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 2 // 100
-        if 0 <= y - 2 < N:
-            board[y - 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 2 < N:
-            board[y + 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 1 // 100
-        if 0 <= y - 1 < N and 0 <= x - 1 < N:
-            board[y - 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x - 1 < N:
-            board[y + 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x + 1 < N:
-            board[y][x + 1] += left
-        else:
-            out += left
-    if direction == 1:
-        moving = dust * 5 // 100
-        if 0 <= y - 2 < N:
-            board[y - 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 10 // 100
-        if 0 <= y - 1 < N and 0 <= x - 1 < N:
-            board[y - 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y - 1 < N and 0 <= x + 1 < N:
-            board[y - 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 7 // 100
-        if 0 <= x - 1 < N:
-            board[y][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x + 1 < N:
-            board[y][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 2 // 100
-        if 0 <= x - 2 < N:
-            board[y][x - 2] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x + 2 < N:
-            board[y][x + 2] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 1 // 100
-        if 0 <= y + 1 < N and 0 <= x - 1 < N:
-            board[y + 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x + 1 < N :
-            board[y + 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y - 1 < N:
-            board[y - 1][x] += left
-        else:
-            out += left
-    if direction == 2:
-        moving = dust * 5 // 100
-        if 0 <= x - 2 < N:
-            board[y][x - 2] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 10 // 100
-        if 0 <= y - 1 < N and 0 <= x - 1 < N:
-            board[y - 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x - 1 < N:
-            board[y + 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 7 // 100
-        if 0 <= y - 1 < N:
-            board[y - 1][x] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N:
-            board[y + 1][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 2 // 100
-        if 0 <= y - 2 < N:
-            board[y - 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 2 < N:
-            board[y + 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 1 // 100
-        if 0 <= y - 1 < N and 0 <= x + 1 < N:
-            board[y - 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x + 1 < N:
-            board[y + 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x - 1 < N:
-            board[y][x - 1] += left
-        else:
-            out += left
-    if direction == 3:
-        moving = dust * 5 // 100
-        if 0 <= y + 2 < N:
-            board[y + 2][x] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 10 // 100
-        if 0 <= y + 1 < N and 0 <= x - 1 < N:
-            board[y + 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N and 0 <= x + 1 < N:
-            board[y + 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 7 // 100
-        if 0 <= x - 1 < N:
-            board[y][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x + 1 < N:
-            board[y][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 2 // 100
-        if 0 <= x - 2 < N:
-            board[y][x - 2] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= x + 2 < N:
-            board[y][x + 2] += moving
-        else:
-            out += moving
-        left -= moving
-        moving = dust * 1 // 100
-        if 0 <= y - 1 < N and 0 <= x - 1 < N:
-            board[y - 1][x - 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y - 1 < N and 0 <= x + 1 < N:
-            board[y - 1][x + 1] += moving
-        else:
-            out += moving
-        left -= moving
-        if 0 <= y + 1 < N:
-            board[y + 1][x] += left
-        else:
-            out += left
-    return out
+def tornado(board, y, x, d, N, vectorList):   # d: 0, 1, 2, 3 -> 좌, 하, 우, 상
+    useVector = vectorList[d]  # 사용할 벡터
+    sand = board[y][x]  # y, x 에 있는 sand들이 이동
+    result = 0
+    mvSum = 0
+    for i in range(-2, 3):
+        for j in range(-2, 3):
+            ny, nx = y + i, x + j
+            moveSand = int(sand * (useVector[i + 2][j + 2] / 100))
+            if 0 <= ny < N and 0 <= nx < N:  # 해당 모래가 이동
+                board[ny][nx] += moveSand
+            else:  # board 바깥으로 나감
+                result += moveSand
+            board[y][x] = 0
+            mvSum += moveSand
+    dy = [0, 1, 0, -1]
+    dx = [-1, 0, 1, 0]
+    ny, nx = y + dy[d], x + dx[d]  # a의 위치
+    if 0 <= ny < N and 0 <= nx < N: #
+        board[ny][nx] += (sand - mvSum)
+    else:
+        result += (sand - mvSum)
+    return result
 
 
 if __name__ == "__main__":
