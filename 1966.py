@@ -1,30 +1,38 @@
-T = int(input())
+import sys
+from collections import deque
 
-def getMaxIdx(inputList):
-    temp = []
-    for i in range(len(inputList)):
-        if type(inputList[i]) == int:
-            temp.append(inputList[i])
-        else:
-            temp.append(inputList[i][1])
-    return temp.index(max(temp))
 
-def printpaper(inputList):
-    cnt = 0
-    while True:
-        inputList += inputList[:getMaxIdx(inputList)]
-        for j in range(getMaxIdx(inputList)):
-            inputList.remove(inputList[0])
-        if type(inputList[0]) == int:
-            inputList.remove(inputList[0])
-            cnt += 1
-        else:
-            cnt += 1
-            break
-    return cnt
+def main():
+    T = int(sys.stdin.readline())
+    for _ in range(T):
+        N, M = map(int, sys.stdin.readline().split())
+        dList = list(map(int, sys.stdin.readline().split()))  # 문서 리스트
+        print(getans(N, M, dList))
 
-for i in range(T):
-    N, M = map(int, input().split())
-    importance = list(map(int, input().split()))
-    importance[M] = [M, importance[M]]
-    print(printpaper(importance))
+
+def getans(N, M, dList):
+    q = deque()
+    ans = 1  # 출력되는 순서
+    for i in range(N):
+        q.append([dList[i], i])  #  중요도, 문서 idx 저장
+    while 1:
+        curImportant = q[0][0]  # 현재 문서의 중요도
+        if chkPrint(q, curImportant):  # 출력 가능한지 확인(뒤에 중요도가 더 높은 문서가 있는지 확인)
+            if q[0][1] == M:  # 현재 index가 M이라면 종료
+                return ans
+            q.popleft()  # 출력했으니 q에서 제거
+            ans += 1  #
+        else:  #출력 불가능. 맨 뒤로 보냄
+            tmp = q.popleft()
+            q.append(tmp)
+
+
+def chkPrint(q, curImportant):
+    for i in range(1, len(q)):
+        if q[i][0] > curImportant:  # 뒤에 중요도가 더 높은 문서가 있음
+            return 0
+    return 1
+
+
+if __name__ == "__main__":
+    main()
